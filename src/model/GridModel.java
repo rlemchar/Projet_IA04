@@ -27,8 +27,18 @@ public class GridModel extends SimState {
 		super.start();
 		grid.clear();
 		addPaint();
+		InitGridColor();
 		//addAgents();
 		numAgents = Constants.NUM_AGENTS;
+	}
+	
+	/* Méthode pour colorier la grille à l'initialisation --> Neutre à l'initialisation*/
+	private void InitGridColor(){
+		for(int x = 0; x < Constants.GRID_SIZE;x++){
+			for(int y = 0;y < Constants.GRID_SIZE;y++){
+				grid.setObjectLocation(new CaseColor(Color.None), x, y);
+			}
+		}
 	}
 	
 	public SparseGrid2D getGrid() {
