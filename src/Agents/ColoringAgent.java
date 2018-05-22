@@ -28,7 +28,7 @@ public class ColoringAgent implements Steppable {
 	}
 	
 	public void perceiveAround(){
-	
+		
 	}
 	
 	public void color(){
