@@ -8,6 +8,12 @@ import util.Constants;
 import sim.util.Int2D;
 
 public class GridModel extends SimState {
+	/**
+	 * Serial Version
+	 */
+	private static final long serialVersionUID = -3869529856795364016L;
+	
+	
 	public SparseGrid2D grid = new SparseGrid2D(Constants.GRID_SIZE, Constants.GRID_SIZE);
 	private static final Random random = new Random();
 	private int numAgents;
