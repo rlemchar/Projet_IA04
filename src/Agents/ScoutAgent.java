@@ -21,7 +21,7 @@ public class ScoutAgent implements Steppable {
 
 	}
 
-	public move(){
+	public void move(){
 
 	}
 

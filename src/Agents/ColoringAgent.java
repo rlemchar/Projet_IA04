@@ -24,6 +24,7 @@ public class ColoringAgent implements Steppable {
 	}
 	
 	public boolean receiveInfoFromScout(){
+		return hasAdestination;
 	
 	}
 	
