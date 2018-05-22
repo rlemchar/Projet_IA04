@@ -27,10 +27,6 @@ public class ColoringAgent implements Steppable {
 
 	}
 
-	public void eat(){
-
-	}
-
 	public void color(){
 
 	}
@@ -39,11 +35,11 @@ public class ColoringAgent implements Steppable {
 
 	}
 
-  public void mooveTowardsDestination(){
+  public void moveTowardsDestination(){
 
   }
 
-  public void mooveRandom(){
+  public void moveRandom(){
 
   }
 
