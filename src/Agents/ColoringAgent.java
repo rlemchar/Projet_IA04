@@ -15,48 +15,44 @@ public class ColoringAgent implements Steppable {
 	Double2D destination;
 	
 	boolean hasPaint;
-
-
-
+	
 	@Override
 	public void step(SimState arg0) {
 		// TODO Auto-generated method stub
-
-
+	
+	
 	}
-
+	
 	public boolean receiveInfoFromScout(){
-
+	
 	}
-
+	
 	public void perceiveAround(){
-
+	
 	}
-
+	
 	public void color(){
-
+	
 	}
-
+	
 	public void rechargePaint(){
-
+	
 	}
-
-  public void moveTowardsDestination(){
-
-  }
-
-  public void moveRandom(){
-
-  }
-
-  public void compareDestinations(){
-
-  }
-
-  public void answerToScout(){
-
-  }
-
-
+	
+	public void moveTowardsDestination(){
+	
+	}
+		
+	public void moveRandom(){
+	
+	}
+	
+	public void compareDestinations(){
+	
+	}
+	
+	public void answerToScout(){
+	
+	}
 
 }
