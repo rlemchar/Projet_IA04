@@ -51,7 +51,7 @@ public class GridModel extends SimState {
 	
 	public void addPaint(){
 		for(int i = 0; i < 15; ++i)
-			grid.setObjectLocation(new FoodGroup(), getFreeLocation());
+			grid.setObjectLocation(new PaintPot(), getFreeLocation());
 	}
 	
 	private Int2D getFreeLocation() {

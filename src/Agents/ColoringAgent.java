@@ -24,13 +24,15 @@ public class ColoringAgent extends AgentOnField implements Steppable {
 	}
 	
 	public boolean receiveInfoFromScout(){
-		for(int x = this.location.x - this.powerOfPerception; x < this.location.x + this.powerOfPerception;x++){
-			for(int y = this.location.y - this.powerOfPerception)
-		}
+		return false;
 	}
 	
 	public void perceiveAround(){
-		
+		for(int x = this.location.x - this.powerOfPerception; x < this.location.x + this.powerOfPerception;x++){
+			for(int y = this.location.y - this.powerOfPerception;y < this.location.y + this.powerOfPerception;y++){
+				
+			}
+		}
 	}
 	
 	public void color(){

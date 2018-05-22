@@ -3,7 +3,7 @@ package Agents;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-public class ScoutAgent implements Steppable {
+public class ScoutAgent extends AgentOnField implements Steppable {
 	/**
 	 * Serial Version
 	 */
@@ -22,6 +22,4 @@ public class ScoutAgent implements Steppable {
 	public void informOthers(){
 
 	}
-
-
 }
