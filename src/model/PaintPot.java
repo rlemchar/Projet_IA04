@@ -7,10 +7,14 @@ import sim.engine.Steppable;
 import sim.engine.SimState;
 import sim.util.Int2D;
 
-
-
-
 public class PaintPot implements Steppable {
+	
+	/**
+	 * Serial Version
+	 */
+	private static final long serialVersionUID = -8147643876316158641L;
+	
+	
 	private int quantity;
 	private GridModel model;
 	

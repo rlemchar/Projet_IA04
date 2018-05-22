@@ -1,9 +1,17 @@
 package Agents;
 
+import java.util.ArrayList;
+
+import model.Color;
 import sim.engine.SimState;
 import sim.engine.Steppable;
+import sim.util.Int2D;
 
 public class ScoutAgent extends AgentOnField implements Steppable {
+	public ScoutAgent(Color colorAgent) {
+		super(colorAgent);
+	}
+
 	/**
 	 * Serial Version
 	 */
@@ -15,11 +23,12 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 
 	}
 
-	public void perceive(){
-
-  }
-
 	public void informOthers(){
 
+	}
+
+	@Override
+	protected ArrayList<Int2D> perceive() {
+		return null;
 	}
 }

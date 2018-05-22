@@ -12,11 +12,11 @@ public class CaseColor {
 		this.color = color;
 	}
 
-	public Color getColour() {
+	public Color getColor() {
 		return color;
 	}
 
-	public void setColour(Color color) {
+	public void setColor(Color color) {
 		this.color = color;
 	}
 	
