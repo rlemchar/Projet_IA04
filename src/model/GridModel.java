@@ -27,8 +27,6 @@ public class GridModel extends SimState {
 		super.start();
 		grid.clear();
 		addPaint();
-		//addAgents();
-		numAgents = Constants.NUM_AGENTS;
 	}
 	
 	public SparseGrid2D getGrid() {
@@ -41,7 +39,7 @@ public class GridModel extends SimState {
 	
 	public void addPaint(){
 		for(int i = 0; i < 15; ++i)
-			grid.setObjectLocation(new FoodGroup(), getFreeLocation());
+			grid.setObjectLocation(new PaintPot(), getFreeLocation());
 	}
 	
 	private Int2D getFreeLocation() {

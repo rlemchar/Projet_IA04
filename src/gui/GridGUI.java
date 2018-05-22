@@ -5,6 +5,7 @@ import java.awt.Color;
 import javax.swing.JFrame;
 
 import model.GridModel;
+import model.PaintPot;
 import sim.display.Controller;
 import sim.display.Display2D;
 import sim.display.GUIState;
@@ -12,6 +13,7 @@ import sim.engine.SimState;
 import sim.portrayal.Inspector;
 import sim.portrayal.grid.SparseGridPortrayal2D;
 import util.Constants;
+import sim.portrayal.simple.OvalPortrayal2D;
 
 public class GridGUI extends GUIState {
 	public Display2D display;
@@ -39,9 +41,17 @@ public class GridGUI extends GUIState {
 	public void setupPortrayals() {
 		GridModel grid = (GridModel) state;	
 		yardPortrayal.setField(grid.getGrid());
+		yardPortrayal.setPortrayalForClass(PaintPot.class, getFoodPortrayal());
 		display.reset();
 		display.setBackdrop(Color.GREEN);
 		display.repaint();
+	}
+	
+	private IntLabel getFoodPortrayal() {
+		OvalPortrayal2D r = new OvalPortrayal2D();
+		r.paint = Color.PINK;
+		r.filled = true;
+		return new IntLabel(r, null);
 	}
 
 	@Override
@@ -50,7 +60,7 @@ public class GridGUI extends GUIState {
 		display = new Display2D(Constants.FRAME_SIZE, Constants.FRAME_SIZE, this);
 		display.setClipping(false);
 		displayFrame = display.createFrame();
-		displayFrame.setTitle("Frames");
+		displayFrame.setTitle("Beings");
 		c.registerFrame(displayFrame);
 		displayFrame.setVisible(true);
 		display.attach(yardPortrayal, "Yard");
