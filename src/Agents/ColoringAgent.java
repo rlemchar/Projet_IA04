@@ -2,12 +2,19 @@ package Agents;
 
 import sim.engine.SimState;
 import sim.engine.Steppable;
+import sim.util.Double2D;
 
 public class ColoringAgent implements Steppable {
 
-  bool hasAdestination = false;
-  Double2D destination;
-  bool hasPaint;
+	/**
+	 * Serial version
+	 */
+	private static final long serialVersionUID = 4967689413678754350L;
+	
+	boolean hasAdestination = false;
+	Double2D destination;
+	
+	boolean hasPaint;
 
 
 
@@ -18,7 +25,7 @@ public class ColoringAgent implements Steppable {
 
 	}
 
-	public bool receiveInfoFromScout(){
+	public boolean receiveInfoFromScout(){
 
 	}
 
