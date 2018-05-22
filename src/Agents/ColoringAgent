@@ -1,0 +1,60 @@
+package Agents;
+
+import sim.engine.SimState;
+import sim.engine.Steppable;
+
+public class ColoringAgent implements Steppable {
+
+  int unitOfPaintLeft;
+  bool hasAdestination = false;
+  Double2D destination;
+  int numberOfUnitsAtDestination;
+
+
+
+	@Override
+	public void step(SimState arg0) {
+		// TODO Auto-generated method stub
+
+
+	}
+
+	public bool receiveInfoFromScout(){
+
+	}
+
+	public void perceiveAround(){
+
+	}
+
+	public void eat(){
+
+	}
+
+	public void color(){
+
+	}
+
+	public void rechargePaint(){
+
+	}
+
+  public void mooveTowardsDestination(){
+
+  }
+
+  public void mooveRandom(){
+
+  }
+
+  public void compareDestinations(){
+
+  }
+
+  public sendLocation(){
+
+  }
+
+
+
+}
