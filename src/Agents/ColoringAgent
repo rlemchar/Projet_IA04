@@ -5,10 +5,9 @@ import sim.engine.Steppable;
 
 public class ColoringAgent implements Steppable {
 
-  int unitOfPaintLeft;
   bool hasAdestination = false;
   Double2D destination;
-  int numberOfUnitsAtDestination;
+  bool hasPaint;
 
 
 
@@ -47,7 +46,7 @@ public class ColoringAgent implements Steppable {
 
   }
 
-  public sendLocation(){
+  public void answerToScout(){
 
   }
 

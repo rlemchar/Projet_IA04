@@ -21,10 +21,8 @@ public class ScoutAgent implements Steppable {
 
 	}
 
-  public Double2D compareLocations(){
-  
-  }
+	public move(){
 
-
+	}
 
 }
