@@ -3,19 +3,30 @@ package Agents;
 import model.GridModel;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
-import model.CaseColor;
 import model.Color;
-import sim.util.Bag;
+import model.CaseColorListWrap;
+import sim.engine.SimState;
+import sim.engine.Steppable;
 import sim.util.Int2D;
 import util.Constants;
+import util.Statics;
 
-
-public abstract class AgentOnField {
+/**
+ * 
+ * @author wakidou
+ * ----------------------------------------------------------------------------------
+ * 		Classe de base pour les agents sur la grille 
+ * ----------------------------------------------------------------------------------
+ */
+public abstract class AgentOnField implements Steppable{
 	
+	/**
+	 * Serial version
+	 */
+	private static final long serialVersionUID = 7976565556245180759L;
+
 	/* Grid */
 	protected GridModel grid;
 	
@@ -31,54 +42,101 @@ public abstract class AgentOnField {
 	/* Agent Color */
 	protected Color colorAgent;
 	
-	public AgentOnField(Color colorAgent){
+	/* Opposite color */
+	protected Color oppositeColor;
+	
+	/* Constructeur par defaut */
+	public AgentOnField() {
 		this.grid = null;
 		this.steps = Constants.MAX_STEPS;
-		this.colorAgent = colorAgent;
 	}
 	
-	/* Permet à un agent de bouger */
+	/* Constructeur avec couleur agent */
+	public AgentOnField(Color colorAgent){
+		this();
+		this.colorAgent = colorAgent;
+		this.oppositeColor = (this.colorAgent == Color.Blue) ? Color.Red : Color.Blue;
+	}
+	
+	/* Step */
+	@Override
+	public void step(SimState state) {
+		this.grid = (GridModel) state;
+	}
+	
+	/* Permet Ã  un agent de bouger */
 	public void move(){
+		/* Les variables */
+		Int2D newLocation;
+		
+		/* On bouge seulement si la grille est disponible */
 		if(this.grid != null){
-			if(steps != 0){
-				
+			newLocation = getNewLocation();
+			if(newLocation != null) {
+				this.grid.getGrid().setObjectLocation(this, newLocation);
 			}
 		}
 	}
 	
-	/* Permet à un agent de percevoir */
-	protected abstract ArrayList<Int2D> perceive();
-	
-	/* Recherche une case où un agent peut aller */
+	/* Permet Ã  un agent de percevoir */
+	public ArrayList<Int2D> perceive(){
+		ArrayList<Int2D> allCoordsFromPerception = new ArrayList<Int2D>();
+		for(int x = this.location.x - this.powerOfPerception; x < this.location.x + this.powerOfPerception;x++){
+			for(int y = this.location.y - this.powerOfPerception;y < this.location.y + this.powerOfPerception;y++){
+				allCoordsFromPerception.add(new Int2D(x,y));
+			}
+		}
+		return allCoordsFromPerception;
+	}
+
+	/**
+	 * Recherche une case oÃ¹ un agent peut aller 
+	 * @return -> Position idÃ©ale pour bouger
+	 */
 	private Int2D getNewLocation(){
-		/* Récupère toutes les cases adjacentes */
-		ArrayList<Int2D> allCases = perceive();
-		Int2D newLocation = null,i = null;
-		Bag objects = null;
+		/* Les variables */
+		ArrayList<Int2D> cells;
+		CaseColorListWrap lists = null;
+		Random r = new Random();
 		
-		/* Recherche d'une case où bouger */
-		while(newLocation != null){
-			i = allCases.get(new Random().nextInt(allCases.size()));
-			objects = grid.getGrid().getObjectsAtLocation(i.x, i.y);
-			List<Int2D> possibleCases = objects.stream()
-				.filter(object -> object instanceof CaseColor)
-				.filter(object -> {
-					CaseColor caseC = (CaseColor)object;
-					if(caseC.getColor() == this.colorAgent && steps >= 1){
-						return true;
-					}
-					else {
-						if(caseC.getColor() == Color.None && steps >= 2){
-							return true;
-						}
-						else{
-							return steps == 3;
-						}
-					}
-				})
-				.map(object -> grid.getGrid().getObjectLocation(object))
-				.collect();
+		/* RÃ©cupÃ©ration des infos couleurs des cases perÃ§ues */
+		lists = Statics.GetColorOfCases(this.grid, perceive());
+		
+		/* StratÃ©gie */
+		/* On regarde si il y a des cases de mÃªme couleur que l'agent */
+		cells = lists.getOneList(this.colorAgent);
+		if(!cells.isEmpty()) {
+			this.steps--;
+			return cells.get(r.nextInt(cells.size())); 
 		}
 		
+		/* On regarde les cases non colorÃ©s */
+		cells = lists.getNone();
+		if(!cells.isEmpty() && this.steps >= 2) {
+			this.steps -= 2;
+			return cells.get(r.nextInt(cells.size())); 
+		}
+		
+		/* On va en territoire ennemi */
+		cells = lists.getOneList(this.oppositeColor);
+		if(!cells.isEmpty() && this.steps == Constants.MAX_STEPS) {
+			this.steps = 0;
+			return cells.get(r.nextInt(cells.size())); 
+		}
+		
+		/* Sinon on ne bouge pas */
+		return null;
+		
+		
 	}
+	
+	/* Getteurs */
+	public Color getColorAgent() { return this.colorAgent; }
+	
+	/* Setteurs */
+	public void setColorAgent(Color colorAgent) { this.colorAgent = colorAgent; }
+	public void setGrid(GridModel grid) { this.grid = grid; }
+	
+	
+	
 }
