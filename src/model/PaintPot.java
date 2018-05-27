@@ -19,7 +19,6 @@ public class PaintPot implements Steppable {
 		model = (GridModel) state;
 		Int2D pos = model.getGrid().getObjectLocation(this);
 		if(empty()) suicide();
-		
 		decQuantity();
 		
 	}
