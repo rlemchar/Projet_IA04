@@ -2,33 +2,34 @@ package Agents;
 
 import sim.engine.SimState;
 import sim.engine.Steppable;
-import sim.util.Double2D;
+import sim.util.Int2D;
 
-public class ColoringAgent implements Steppable {
+import model.Color;
+import model.GridModel;
 
+
+public class ColoringAgent extends AgentOnField implements Steppable {
 	/**
 	 * Serial version
 	 */
 	private static final long serialVersionUID = 4967689413678754350L;
 	
 	boolean hasAdestination = false;
-	Double2D destination;
+	Int2D destination;
 	
 	boolean hasPaint;
 	
+	public ColoringAgent(Color colorAgent) {
+		super(colorAgent);
+	}
+	
 	@Override
-	public void step(SimState arg0) {
-		// TODO Auto-generated method stub
-	
-	
+	public void step(SimState state) {
+		this.grid = (GridModel) state;
 	}
 	
 	public boolean receiveInfoFromScout(){
-	
-	}
-	
-	public void perceiveAround(){
-	
+		return false;
 	}
 	
 	public void color(){
@@ -36,17 +37,13 @@ public class ColoringAgent implements Steppable {
 	}
 	
 	public void rechargePaint(){
-	
+		
 	}
 	
 	public void moveTowardsDestination(){
 	
 	}
 		
-	public void moveRandom(){
-	
-	}
-	
 	public void compareDestinations(){
 	
 	}
@@ -54,5 +51,4 @@ public class ColoringAgent implements Steppable {
 	public void answerToScout(){
 	
 	}
-
 }
