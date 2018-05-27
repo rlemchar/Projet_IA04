@@ -11,11 +11,13 @@ import model.Color;
  * -------------------------------------------------------------------------
  */
 public final class FactoryAgent {
-	public static AgentOnField make(Class<?> c,Color colorAgent) {
+	/**
+	 * @param c -> Classe fille de la classe AgentOnField
+	 * @param colorAgent -> Couleur de l'agent
+	 * @return Une nouvelle instance d'un agent 
+	 */
+	public static AgentOnField make(Class<? extends AgentOnField> c,Color colorAgent) {
 		try {
-			if(!(c == AgentOnField.class))
-				throw new IllegalArgumentException("La classe en paramètre n'est pas un AgentOnField");
-			
 			if(colorAgent == Color.None)
 				throw new IllegalArgumentException("L'agent doit posséder une couleur !");
 				

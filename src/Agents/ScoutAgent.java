@@ -6,6 +6,10 @@ import sim.engine.SimState;
 import sim.engine.Steppable;
 
 public class ScoutAgent extends AgentOnField implements Steppable {
+	public ScoutAgent() {
+		super();
+	}
+	
 	public ScoutAgent(Color colorAgent) {
 		super(colorAgent);
 	}
