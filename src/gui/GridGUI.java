@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import javax.swing.JFrame;
 
+import Agents.AgentOnField;
 import model.GridModel;
 import model.PaintPot;
 import sim.display.Controller;
@@ -12,8 +13,9 @@ import sim.display.GUIState;
 import sim.engine.SimState;
 import sim.portrayal.Inspector;
 import sim.portrayal.grid.SparseGridPortrayal2D;
-import util.Constants;
 import sim.portrayal.simple.OvalPortrayal2D;
+import sim.portrayal.simple.RectanglePortrayal2D;
+import util.Constants;
 
 public class GridGUI extends GUIState {
 	public Display2D display;
@@ -41,17 +43,53 @@ public class GridGUI extends GUIState {
 	public void setupPortrayals() {
 		GridModel grid = (GridModel) state;	
 		yardPortrayal.setField(grid.getGrid());
-		yardPortrayal.setPortrayalForClass(PaintPot.class, getFoodPortrayal());
+		
+		/* Couleur pour les pots de peintures */
+		yardPortrayal.setPortrayalForClass(PaintPot.class, getIntLabelForObject(Color.PINK));
+		
+		/* Couleurs pour les agents */
+		grid.getListAgents().forEach(agent -> {
+			yardPortrayal.setPortrayalForObject(agent, getIntLabelForObject(agent));
+		});
+		
+		/* Affichage de la grille */
 		display.reset();
 		display.setBackdrop(Color.GREEN);
 		display.repaint();
 	}
+	/**
+	 * @param color -> couleur de l'objet
+	 * @return Un IntLabel pour l'objet à afficher
+	 */
+	private IntLabel getIntLabelForObject(Color color) {
+		return getIntLabelForObject(color,null);
+	}
 	
-	private IntLabel getFoodPortrayal() {
-		OvalPortrayal2D r = new OvalPortrayal2D();
-		r.paint = Color.PINK;
+	/**
+	 * @param color -> couleur de l'objet
+	 * @return Un IntLabel pour l'objet à afficher
+	 */
+	private IntLabel getIntLabelForObject(Color color,String labelName) {
+		RectanglePortrayal2D r = new RectanglePortrayal2D();
+		r.paint = color;
 		r.filled = true;
-		return new IntLabel(r, null);
+		return new IntLabel(r, labelName);
+	}
+	
+	/**
+	 * @param color -> Couleur des agents
+	 * @return un IntLabel pour l'agent à afficher
+	 */
+	private IntLabel getIntLabelForObject(AgentOnField agent) throws IllegalArgumentException{ 
+		switch(agent.getColorAgent()) {
+			case Blue:
+				return getIntLabelForObject(Color.BLUE,agent.toString());
+			case Red:
+				return getIntLabelForObject(Color.RED,agent.toString());
+			default:
+				throw new IllegalArgumentException("L'agent doit avoir une couleur !");
+		
+		}
 	}
 
 	@Override

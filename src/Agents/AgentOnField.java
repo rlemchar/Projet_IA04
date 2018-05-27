@@ -90,7 +90,7 @@ public abstract class AgentOnField implements Steppable{
 	}
 
 	/**
-	 * Recherche une case où un agent peut aller 
+	 * Recherche une case o� un agent peut aller 
 	 * @return -> Position idéale pour bouger
 	 */
 	private Int2D getNewLocation(){

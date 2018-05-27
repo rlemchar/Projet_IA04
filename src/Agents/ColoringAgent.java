@@ -19,6 +19,10 @@ public class ColoringAgent extends AgentOnField implements Steppable {
 	
 	boolean hasPaint;
 	
+	public ColoringAgent() {
+		super();
+	}
+	
 	public ColoringAgent(Color colorAgent) {
 		super(colorAgent);
 	}

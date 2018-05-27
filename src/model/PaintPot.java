@@ -5,7 +5,6 @@ import java.util.Random;
 import model.GridModel;
 import sim.engine.Steppable;
 import sim.engine.SimState;
-import sim.util.Int2D;
 
 public class PaintPot implements Steppable {
 	
@@ -30,16 +29,16 @@ public class PaintPot implements Steppable {
 	public PaintPot() {
 		quantity = Constants.MAX_PAINTING;
 		Random randomGenerator = new Random();
-		quantity = quantity + randomGenerator.nextInt(5);
+		quantity += randomGenerator.nextInt(5);
 		
 	}
 	
-	//Retourne le nombre d'unité de peinture restant dans le pot
+	//Retourne le nombre d'unitÃ© de peinture restant dans le pot
 	public int getQuantity() {
 		return quantity;
 	}
 
-	//Lorsqu'un agent prend une unité de peinture
+	//Lorsqu'un agent prend une unitÃ© de peinture
 	public void decQuantity() {
 		--quantity;
 	}

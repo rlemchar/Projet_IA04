@@ -72,6 +72,8 @@ public final class Statics {
 	 */
 	public static boolean isCaseFree(GridModel grid,Int2D location) {
 		Bag objects = grid.getGrid().getObjectsAtLocation(location.x, location.y);
-		return objects.size() == 0 || (objects.size() == 1 && objects.get(0) instanceof CaseColor);
+		if(objects == null)
+			return true;
+		return objects.size() == 0 || objects.numObjs == 1 && objects.get(0) instanceof CaseColor;
 	}
 }
