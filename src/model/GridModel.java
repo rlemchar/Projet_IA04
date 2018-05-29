@@ -6,7 +6,6 @@ import Agents.AgentOnField;
 import Agents.ColoringAgent;
 import Agents.ScoutAgent;
 import model.PaintPot;
-import model.ModeForGetFreeLocation;
 import model.Color;
 import sim.engine.SimState;
 import sim.field.grid.SparseGrid2D;

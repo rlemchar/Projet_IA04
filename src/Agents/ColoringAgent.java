@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import model.CaseColor;
 import model.Color;
 import model.GridModel;
+import model.PaintPot;
 
 
 public class ColoringAgent extends AgentOnField implements Steppable {
@@ -22,11 +23,10 @@ public class ColoringAgent extends AgentOnField implements Steppable {
 	/* Nombre de tubes de peinture */
 	private int numberOfTubeOfPaint;
 	
-	/* Peinture disponible */
-	
-	
 	private boolean hasAdestination = false;
-	Int2D destination;
+	
+	/* Destination objectif de l'agent */
+	private Int2D destination;
 	
 	/** Constructeur par défaut **/
 	public ColoringAgent() {
@@ -95,8 +95,17 @@ public class ColoringAgent extends AgentOnField implements Steppable {
 		}
 	}
 	
-	public void rechargePaint(){
-		
+	/**
+	 * Permet de recharger le nombre de tubes de peinture
+	 * @param pot -> Pot de peinture à la position de l'agent
+	 */
+	public void rechargePaint(PaintPot pot){
+		if(!this.isFullyLoadedOfPaint()){
+			while(this.isFullyLoadedOfPaint() && pot.getQuantity() != 0){
+				this.numberOfTubeOfPaint++;
+				pot.decQuantity();
+			}
+		}
 	}
 	
 	public void moveTowardsDestination(){
@@ -113,6 +122,14 @@ public class ColoringAgent extends AgentOnField implements Steppable {
 	 */
 	public boolean CanColorOppositeCase(){
 		return this.numberOfTubeOfPaint > 2;
+	}
+	
+	/**
+	 * Renvoie un booléen qui permet de vérifier si la charge de peinture est à son max
+	 * @return
+	 */
+	public boolean isFullyLoadedOfPaint(){
+		return this.numberOfTubeOfPaint == Constants.MAX_TUBE_OF_PAINT;
 	}
 	
 	

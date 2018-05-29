@@ -154,7 +154,4 @@ public abstract class AgentOnField implements Steppable{
 	public void setStop(Stoppable stop) {
 		this.stop = stop;
 	}
-	
-	
-	
 }

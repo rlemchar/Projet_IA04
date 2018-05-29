@@ -39,7 +39,7 @@ public class PaintPot implements Steppable {
 	public int getQuantity() {
 		return quantity;
 	}
-
+	
 	//Lorsqu'un agent prend une unité de peinture
 	public void decQuantity() {
 		--quantity;
