@@ -30,6 +30,25 @@ public final class Statics {
 	}
 	
 	/**
+	 * Permet de renvoyer tous les couleurs des cases pour une zone donnée en paramètre
+	 * @param grid -> Grille de simulation
+	 * @param pointTopLeft -> Point haut gauche de la zone
+	 * @param sizeX -> Longueur
+	 * @param sizeY -> Largeur
+	 * @return Liste des couleurs de chaque case
+	 */
+	public static ArrayList<CaseColor> GetZoneColor(GridModel grid,Int2D pointTopLeft,int sizeX,int sizeY){
+		ArrayList<CaseColor> result = new ArrayList<CaseColor>();
+		for(int x = pointTopLeft.x; x < sizeX;x++){
+			for(int y = pointTopLeft.y; y < sizeY;y++){
+				// On suppose que la case couleur est bien trouvé -> retour de GetCaseColor non null
+				result.add(Statics.GetCaseColor(grid.getGrid().getObjectsAtLocation(x, y)));
+			}
+		}
+		return result;
+	}
+	
+	/**
 	 * @param location -> Position de la case
 	 * @param grid -> Grille de simulation
 	 * @return -> La couleur de la case
