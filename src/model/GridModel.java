@@ -155,20 +155,5 @@ public class GridModel extends SimState {
 	public void setGrid(SparseGrid2D grid) {
 		this.grid = grid;
 	}
-	
-	public int getPaintQuantity() {
-		int quantity = 9;
-		return quantity;
-	}
-	
-	public void addPaintIfNeeded() {
-		int quantity = getPaintQuantity();
-		if(quantity < Constants.MIN_TIN_OF_PAINT) {
-			PaintPot temp = new PaintPot();
-			this.grid.setObjectLocation(temp, getFreeLocation());
-			schedule.scheduleRepeating(temp);
-
-		}		
-	}
 
 }
