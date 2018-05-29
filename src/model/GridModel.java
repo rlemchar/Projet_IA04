@@ -73,7 +73,7 @@ public class GridModel extends SimState {
 	 * Permet de retourner une position d'une case libre n'importe où sur la grille
 	 * @return position libre
 	 */
-	private Int2D getFreeLocation() {
+	public Int2D getFreeLocation() {
 		return getFreeLocation(0);
 	}
 	
@@ -81,7 +81,7 @@ public class GridModel extends SimState {
 	 * Permet de retourner une position d'une case libre dans une zone définie en mode normal
 	 * @return position libre
 	 */
-	private Int2D getFreeLocation(int yLim) {
+	public Int2D getFreeLocation(int yLim) {
 		return getFreeLocation(yLim,0);
 	}
 	
@@ -90,7 +90,7 @@ public class GridModel extends SimState {
 	 * @param zoneBegin -> point représentant le début (haut gauche) de la zone de limitation
 	 * @return position libre
 	 */
-	private Int2D getFreeLocation(int yLim,int mode) {
+	public Int2D getFreeLocation(int yLim,int mode) {
 		Int2D location = null,temp = null;
 		switch(mode){
 			case -1:
@@ -165,7 +165,10 @@ public class GridModel extends SimState {
 	public void addPaintIfNeeded() {
 		int quantity = getPaintQuantity();
 		if(quantity < Constants.MIN_TIN_OF_PAINT) {
-			grid.setObjectLocation(new PaintPot(), getFreeLocation());
+			PaintPot temp = new PaintPot();
+			this.grid.setObjectLocation(temp, getFreeLocation());
+			schedule.scheduleRepeating(temp);
+
 		}		
 	}
 

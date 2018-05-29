@@ -23,7 +23,7 @@ public class PaintPot implements Steppable {
 	public void step(SimState state) {
 		model = (GridModel) state;
 		Int2D pos = model.getGrid().getObjectLocation(this);
-		if(empty()) suicide();
+		if(empty()) replace();
 		decQuantity();
 		
 	}
@@ -50,8 +50,11 @@ public class PaintPot implements Steppable {
 		return quantity == 0;
 	}
 	
-	private void suicide() {
-		model.getGrid().remove(this);
+	private void replace() {
+		model.getGrid().setObjectLocation(this, model.getFreeLocation());
+		quantity = Constants.MAX_PAINTING;
+		Random randomGenerator = new Random();
+		quantity += randomGenerator.nextInt(5);
 	}
 	
 	

@@ -39,7 +39,6 @@ public class GridGUI extends GUIState {
 	 */
 	public void load(SimState state) {
 		super.load(state);
-		((GridModel) state).addPaintIfNeeded();
 		setupPortrayals();
 	}
 
