@@ -6,7 +6,6 @@ import sim.util.Int2D;
 import util.Constants;
 import util.Statics;
 
-import java.util.ArrayList;
 import java.util.stream.Stream;
 
 import model.CaseColor;
@@ -60,7 +59,7 @@ public class ColoringAgent extends AgentOnField implements Steppable {
 	public void Color(){
 		/* Variables locales*/
 		Stream<CaseColor> colorZoneFiltered;
-		int i;
+		CaseColor[] cellWithOppositeColor;
 		
 		/* Récupération de la zone de coloriage -> Uniquement les cases qui ne sont pas de la couleur de l'agent*/
 		colorZoneFiltered = Statics.GetZoneColor(grid, new Int2D(
@@ -69,9 +68,31 @@ public class ColoringAgent extends AgentOnField implements Steppable {
 								), this.location.x + this.powerOfPerception, this.location.y + this.powerOfPerception
 							).stream().filter(cell -> cell.getColor() != this.colorAgent);
 		
-		/* On ne colorie pas si le nombre de cases à colorier est inférieur au seuil */
-
+		/* Récupération des cases avec la couleur de l'équipe adverse */
+		cellWithOppositeColor = colorZoneFiltered.filter(cell -> cell.getColor() == this.oppositeColor).toArray(CaseColor[]::new);
 		
+		/* On ne colorie pas si le nombre de cases à colorier est inférieur au seuil */
+		if(colorZoneFiltered.count() >= Constants.THRESHOLD_FOR_PAINTING_A_ZONE){
+			/* On colorie et/ou on rend les cases neutre d'abord */
+			for(CaseColor cell : colorZoneFiltered.toArray(CaseColor[]::new)){
+				if(this.HasPaint()){
+					cell.setColor(cell.getColor() == Color.None ? this.colorAgent : Color.None);
+					this.numberOfTubeOfPaint--;
+				}		
+				else
+					break;	
+			}
+			
+			/* On colorie les cases neutres restantes */
+			for(CaseColor cell : cellWithOppositeColor){
+				if(this.HasPaint()){
+					cell.setColor(this.colorAgent);
+					this.numberOfTubeOfPaint--;
+				}
+				else
+					break;
+			}
+		}
 	}
 	
 	public void rechargePaint(){
@@ -86,6 +107,19 @@ public class ColoringAgent extends AgentOnField implements Steppable {
 	
 	}
 	
+	/**
+	 * Permet de savoir si l'agent peut colorier une case adverse
+	 * @return
+	 */
+	public boolean CanColorOppositeCase(){
+		return this.numberOfTubeOfPaint > 2;
+	}
+	
+	
+	/**
+	 * Permet de savoir si l'agent a des tubes de peintures
+	 * @return booléen
+	 */
 	public boolean HasPaint(){
 		return this.numberOfTubeOfPaint == 0;
 	}
