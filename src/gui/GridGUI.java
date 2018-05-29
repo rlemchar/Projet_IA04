@@ -12,7 +12,6 @@ import sim.display.GUIState;
 import sim.engine.SimState;
 import sim.portrayal.Inspector;
 import sim.portrayal.grid.SparseGridPortrayal2D;
-import sim.portrayal.simple.OvalPortrayal2D;
 import sim.portrayal.simple.RectanglePortrayal2D;
 import util.Constants;
 
