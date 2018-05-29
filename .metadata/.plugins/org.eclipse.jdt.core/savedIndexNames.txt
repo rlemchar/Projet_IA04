@@ -1,1 +1,0 @@
-INDEX VERSION 1.130+C:\Users\Jean-Baptiste SIX\Desktop\Travail\Branche\GI04\IA04\Projet\Projet_IA04\.metadata\.plugins\org.eclipse.jdt.core

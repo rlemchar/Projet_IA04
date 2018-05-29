@@ -24,6 +24,9 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 		super.step(state);
 	}
 
+	/** 
+	 * Pour Roxanne 
+	 */
 	public void informOthers(){
 
 	}

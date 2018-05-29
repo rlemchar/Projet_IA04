@@ -36,8 +36,20 @@ public class ColoringAgent extends AgentOnField implements Steppable {
 		return false;
 	}
 	
-	public void color(){
-	
+	/**
+	 * Permet de colorier une zone 
+	 * -> La zone est égale à la zone de perception de l'agent
+	 */
+	public void Color(){
+		/* Variables locales*/
+		int x,y;
+		
+		/* Coloriage de la zone */
+		for(x = this.location.x - this.powerOfPerception;x < this.location.x + this.powerOfPerception;x++){
+			for(y = this.location.y - this.powerOfPerception;y < this.location.y + this.powerOfPerception;y++){
+				
+			}
+		}
 	}
 	
 	public void rechargePaint(){
@@ -52,6 +64,9 @@ public class ColoringAgent extends AgentOnField implements Steppable {
 	
 	}
 	
+	/** 
+	 * Pour Roxanne 
+	 */
 	public void answerToScout(){
 	
 	}
