@@ -70,10 +70,7 @@ public class ColoringAgent extends AgentOnField implements Steppable {
 							).stream().filter(cell -> cell.getColor() != this.colorAgent);
 		
 		/* On ne colorie pas si le nombre de cases à colorier est inférieur au seuil */
-		if(colorZoneFiltered.count() >= Constants.THRESHOLD_FOR_PAINTING_A_ZONE){
-			i = 0;
-			while(i != this.)
-		}
+
 		
 	}
 	

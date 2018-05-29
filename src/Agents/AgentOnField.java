@@ -69,6 +69,8 @@ public abstract class AgentOnField implements Steppable{
 	public void step(SimState state) {
 		this.grid = (GridModel) state;
 		this.location = this.grid.getGrid().getObjectLocation(this);
+		Int2D newlocation = new Int2D(this.location.x +1, this.location.y);
+		this.grid.getGrid().setObjectLocation(this, newlocation);
 	}
 	
 	/* Permet à un agent de bouger */

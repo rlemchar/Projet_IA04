@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import Agents.AgentOnField;
 import Agents.ColoringAgent;
 import Agents.ScoutAgent;
+import model.PaintPot;
 import model.ModeForGetFreeLocation;
 import model.Color;
 import sim.engine.SimState;
@@ -61,7 +62,11 @@ public class GridModel extends SimState {
 	 */
 	public void addPaint(){
 		for(int i = 0; i < Constants.MAX_TIN_OF_PAINT; ++i)
-			grid.setObjectLocation(new PaintPot(), getFreeLocation());
+		{
+			PaintPot temp = new PaintPot();
+			grid.setObjectLocation(temp, getFreeLocation());
+			schedule.scheduleRepeating(temp);
+		}
 	}
 	
 	/**
@@ -120,6 +125,7 @@ public class GridModel extends SimState {
 			temp = FactoryAgent.make((i < Constants.MAX_SCOUT_AGENTS) ? ScoutAgent.class : ColoringAgent.class,Color.Red);
 			grid.setObjectLocation(temp, getFreeLocation(Constants.SPAWN_ZONE_INIT, -1));
 			this.listAgents.add(temp);
+			schedule.scheduleRepeating(temp);
 		}
 		
 		/* Les bleus -> En bas de la map */
@@ -127,6 +133,7 @@ public class GridModel extends SimState {
 			temp = FactoryAgent.make((i < Constants.MAX_SCOUT_AGENTS) ? ScoutAgent.class : ColoringAgent.class,Color.Blue);
 			grid.setObjectLocation(temp, getFreeLocation(grid.getHeight() - Constants.SPAWN_ZONE_INIT));
 			this.listAgents.add(temp);
+			schedule.scheduleRepeating(temp);
 		}		
 	}
 
