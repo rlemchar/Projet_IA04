@@ -5,6 +5,8 @@ import java.util.Random;
 import model.GridModel;
 import sim.engine.Steppable;
 import sim.engine.SimState;
+import sim.util.Int2D;
+
 
 public class PaintPot implements Steppable {
 	
@@ -20,9 +22,8 @@ public class PaintPot implements Steppable {
 	@Override
 	public void step(SimState state) {
 		model = (GridModel) state;
-		if(empty()) 
-			suicide();
-		
+		Int2D pos = model.getGrid().getObjectLocation(this);
+		if(empty()) suicide();
 		decQuantity();
 		
 	}

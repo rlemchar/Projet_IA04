@@ -7,11 +7,15 @@ import java.util.Random;
 
 import model.Color;
 import model.CaseColorListWrap;
+
 import sim.engine.SimState;
 import sim.engine.Steppable;
+import sim.engine.Stoppable;
+
 import sim.util.Int2D;
 import util.Constants;
 import util.Statics;
+
 
 /**
  * 
@@ -21,6 +25,8 @@ import util.Statics;
  * ----------------------------------------------------------------------------------
  */
 public abstract class AgentOnField implements Steppable{
+	
+	protected Stoppable stop;
 	
 	/**
 	 * Serial version
@@ -91,7 +97,7 @@ public abstract class AgentOnField implements Steppable{
 	}
 
 	/**
-	 * Recherche une case où un agent peut aller 
+	 * Recherche une case o� un agent peut aller 
 	 * @return -> Position idéale pour bouger
 	 */
 	private Int2D getNewLocation(){
@@ -137,6 +143,15 @@ public abstract class AgentOnField implements Steppable{
 	/* Setteurs */
 	public void setColorAgent(Color colorAgent) { this.colorAgent = colorAgent; }
 	public void setGrid(GridModel grid) { this.grid = grid; }
+	
+	
+	public Stoppable getStop() {
+		return stop;
+	}
+
+	public void setStop(Stoppable stop) {
+		this.stop = stop;
+	}
 	
 	
 	

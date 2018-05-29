@@ -43,10 +43,8 @@ public class GridGUI extends GUIState {
 	public void setupPortrayals() {
 		GridModel grid = (GridModel) state;	
 		yardPortrayal.setField(grid.getGrid());
-		
 		/* Couleur pour les pots de peintures */
 		yardPortrayal.setPortrayalForClass(PaintPot.class, getIntLabelForObject(Color.PINK));
-		
 		/* Couleurs pour les agents */
 		grid.getListAgents().forEach(agent -> {
 			yardPortrayal.setPortrayalForObject(agent, getIntLabelForObject(agent));
