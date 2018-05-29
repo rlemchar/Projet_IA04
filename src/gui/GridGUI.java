@@ -1,5 +1,4 @@
 package gui;
-
 import java.awt.Color;
 
 import javax.swing.JFrame;
@@ -35,8 +34,12 @@ public class GridGUI extends GUIState {
 		setupPortrayals();
 	}
 
+	/* (non-Javadoc)
+	 * @see sim.display.GUIState#load(sim.engine.SimState)
+	 */
 	public void load(SimState state) {
 		super.load(state);
+		((GridModel) state).addPaintIfNeeded();
 		setupPortrayals();
 	}
 

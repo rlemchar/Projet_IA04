@@ -40,7 +40,7 @@ public class GridModel extends SimState {
 		/* On initialise la grille avec la couleur neutre */
 		InitGridColor();
 		/* On ajoute la peinture et les agents*/
-		addPaint();
+		initPaint();
 		addAgents();
 	}
 	
@@ -59,7 +59,7 @@ public class GridModel extends SimState {
 	/**
 	 * Permet d'ajouter les pots de peintures sur la carte à l'initialisation 
 	 */
-	public void addPaint(){
+	public void initPaint(){
 		for(int i = 0; i < Constants.MAX_TIN_OF_PAINT; ++i)
 			grid.setObjectLocation(new PaintPot(), getFreeLocation());
 	}
@@ -148,6 +148,18 @@ public class GridModel extends SimState {
 	/* Setteur grille */
 	public void setGrid(SparseGrid2D grid) {
 		this.grid = grid;
+	}
+	
+	public int getPaintQuantity() {
+		int quantity = 9;
+		return quantity;
+	}
+	
+	public void addPaintIfNeeded() {
+		int quantity = getPaintQuantity();
+		if(quantity < Constants.MIN_TIN_OF_PAINT) {
+			grid.setObjectLocation(new PaintPot(), getFreeLocation());
+		}		
 	}
 
 }
