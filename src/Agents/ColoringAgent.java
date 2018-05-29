@@ -93,7 +93,6 @@ public class ColoringAgent extends AgentOnField implements Steppable {
 					break;
 			}
 		}
-		
 	}
 	
 	public void rechargePaint(){
