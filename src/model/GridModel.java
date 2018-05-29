@@ -24,7 +24,7 @@ public class GridModel extends SimState {
 	public SparseGrid2D grid = new SparseGrid2D(Constants.GRID_SIZE, Constants.GRID_SIZE);
 	
 	/* Liste des agents */
-	private ArrayList<AgentOnField> listAgents; 
+	private ArrayList<AgentOnField> listAgents;
 	
 	
 	public GridModel(long seed) {
@@ -35,17 +35,12 @@ public class GridModel extends SimState {
 	@Override
 	public void start() {
 		super.start();
-		
 		/* On nettoie la grille */
 		grid.clear();
-		
 		/* On initialise la grille avec la couleur neutre */
 		InitGridColor();
-		
-		/* On ajoute la peinture */
+		/* On ajoute la peinture et les agents*/
 		addPaint();
-		
-		/* On ajoute les agents */
 		addAgents();
 	}
 	
@@ -82,7 +77,7 @@ public class GridModel extends SimState {
 	 * @return position libre
 	 */
 	private Int2D getFreeLocation(int yLim) {
-		return getFreeLocation(yLim,ModeForGetFreeLocation.Regular);
+		return getFreeLocation(yLim,0);
 	}
 	
 	/**
@@ -90,25 +85,20 @@ public class GridModel extends SimState {
 	 * @param zoneBegin -> point représentant le début (haut gauche) de la zone de limitation
 	 * @return position libre
 	 */
-	private Int2D getFreeLocation(int yLim,ModeForGetFreeLocation mode) {
+	private Int2D getFreeLocation(int yLim,int mode) {
 		Int2D location = null,temp = null;
-		switch(mode) {
-			case Inverse:
+		switch(mode){
+			case -1:
 				do {
-					temp = new Int2D(
-							random.nextInt(grid.getWidth()),
-							random.nextInt(yLim)
-					);
+					temp = new Int2D(random.nextInt(grid.getWidth()),random.nextInt(yLim));
 					if(Statics.isCaseFree(this, temp));
 						location = temp;
 					
 				} while (location == null);
+				break;
 			default:
 				do {
-					temp = new Int2D(
-							random.nextInt(grid.getWidth()),
-							yLim + random.nextInt(grid.getHeight() - yLim)
-					);
+					temp = new Int2D(random.nextInt(grid.getWidth()), yLim + random.nextInt(grid.getHeight() - yLim));
 					if(Statics.isCaseFree(this, temp));
 						location = temp;
 				} while (location == null);
@@ -128,20 +118,14 @@ public class GridModel extends SimState {
 		/* Les rouges -> En haut de la map*/
 		for(i = 0; i < Constants.NUM_AGENTS; i++) {
 			temp = FactoryAgent.make((i < Constants.MAX_SCOUT_AGENTS) ? ScoutAgent.class : ColoringAgent.class,Color.Red);
-			grid.setObjectLocation(
-					temp, 
-					getFreeLocation(Constants.SPAWN_ZONE_INIT,ModeForGetFreeLocation.Inverse)
-			);
+			grid.setObjectLocation(temp, getFreeLocation(Constants.SPAWN_ZONE_INIT, -1));
 			this.listAgents.add(temp);
 		}
 		
 		/* Les bleus -> En bas de la map */
 		for(i = 0; i < Constants.NUM_AGENTS; i++) {
 			temp = FactoryAgent.make((i < Constants.MAX_SCOUT_AGENTS) ? ScoutAgent.class : ColoringAgent.class,Color.Blue);
-			grid.setObjectLocation(
-					temp, 
-					getFreeLocation(grid.getHeight() - Constants.SPAWN_ZONE_INIT)
-			);
+			grid.setObjectLocation(temp, getFreeLocation(grid.getHeight() - Constants.SPAWN_ZONE_INIT));
 			this.listAgents.add(temp);
 		}		
 	}

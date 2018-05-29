@@ -5,6 +5,8 @@ import java.util.Random;
 import model.GridModel;
 import sim.engine.Steppable;
 import sim.engine.SimState;
+import sim.util.Int2D;
+
 
 public class PaintPot implements Steppable {
 	
