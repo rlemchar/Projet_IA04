@@ -6,11 +6,14 @@ import sim.util.Int2D;
 import util.Constants;
 import util.Statics;
 
+import java.util.ArrayList;
 import java.util.stream.Stream;
 
 import model.CaseColor;
 import model.Color;
+import model.CommunicationSystem;
 import model.GridModel;
+import model.Order;
 import model.PaintPot;
 
 
@@ -28,7 +31,7 @@ public class ColoringAgent extends AgentOnField implements Steppable {
 	/* Destination objectif de l'agent */
 	private Int2D destination;
 	
-	/** Constructeur par défaut **/
+	/** Constructeur par dï¿½faut **/
 	public ColoringAgent() {
 		super();
 		this.numberOfTubeOfPaint = 0;
@@ -46,6 +49,17 @@ public class ColoringAgent extends AgentOnField implements Steppable {
 	@Override
 	public void step(SimState state) {
 		this.grid = (GridModel) state;
+		/*
+		if (!hasAdestination){
+			if (isThereNewOrders){
+				moveTowardsDestination();
+			}else{
+				move();
+			}
+		}else{
+			moveTowardsDestination();
+		}
+		*/
 	}
 	
 	public boolean receiveInfoFromScout(){
@@ -54,24 +68,24 @@ public class ColoringAgent extends AgentOnField implements Steppable {
 	
 	/**
 	 * Permet de colorier une zone 
-	 * -> La zone est égale à la zone de perception de l'agent
+	 * -> La zone est ï¿½gale ï¿½ la zone de perception de l'agent
 	 */
 	public void Color(){
 		/* Variables locales*/
 		Stream<CaseColor> colorZoneFiltered;
 		CaseColor[] cellWithOppositeColor;
 		
-		/* Récupération de la zone de coloriage -> Uniquement les cases qui ne sont pas de la couleur de l'agent*/
+		/* Rï¿½cupï¿½ration de la zone de coloriage -> Uniquement les cases qui ne sont pas de la couleur de l'agent*/
 		colorZoneFiltered = Statics.GetZoneColor(grid, new Int2D(
 									this.location.x - this.powerOfPerception,
 									this.location.y - this.powerOfPerception
 								), this.location.x + this.powerOfPerception, this.location.y + this.powerOfPerception
 							).stream().filter(cell -> cell.getColor() != this.colorAgent);
 		
-		/* Récupération des cases avec la couleur de l'équipe adverse */
+		/* Rï¿½cupï¿½ration des cases avec la couleur de l'ï¿½quipe adverse */
 		cellWithOppositeColor = colorZoneFiltered.filter(cell -> cell.getColor() == this.oppositeColor).toArray(CaseColor[]::new);
 		
-		/* On ne colorie pas si le nombre de cases à colorier est inférieur au seuil */
+		/* On ne colorie pas si le nombre de cases ï¿½ colorier est infï¿½rieur au seuil */
 		if(colorZoneFiltered.count() >= Constants.THRESHOLD_FOR_PAINTING_A_ZONE){
 			/* On colorie et/ou on rend les cases neutre d'abord */
 			for(CaseColor cell : colorZoneFiltered.toArray(CaseColor[]::new)){
@@ -97,7 +111,7 @@ public class ColoringAgent extends AgentOnField implements Steppable {
 	
 	/**
 	 * Permet de recharger le nombre de tubes de peinture
-	 * @param pot -> Pot de peinture à la position de l'agent
+	 * @param pot -> Pot de peinture ï¿½ la position de l'agent
 	 */
 	public void rechargePaint(PaintPot pot){
 		if(!this.isFullyLoadedOfPaint()){
@@ -125,7 +139,7 @@ public class ColoringAgent extends AgentOnField implements Steppable {
 	}
 	
 	/**
-	 * Renvoie un booléen qui permet de vérifier si la charge de peinture est à son max
+	 * Renvoie un boolï¿½en qui permet de vï¿½rifier si la charge de peinture est ï¿½ son max
 	 * @return
 	 */
 	public boolean isFullyLoadedOfPaint(){
@@ -135,16 +149,51 @@ public class ColoringAgent extends AgentOnField implements Steppable {
 	
 	/**
 	 * Permet de savoir si l'agent a des tubes de peintures
-	 * @return booléen
+	 * @return boolï¿½en
 	 */
 	public boolean HasPaint(){
 		return this.numberOfTubeOfPaint == 0;
 	}
 	
-	/** 
-	 * Pour Roxanne 
-	 */
-	public void answerToScout(){
+	// Partie communication / Execution ordre
 	
+	public Boolean isThereNewOrders(){
+		
+		ArrayList<Order> lastOrders = CommunicationSystem.consultOrders(this);
+		if (lastOrders.isEmpty()){
+			return false;
+		}else{
+			compareAndChooseOrder(lastOrders);
+			return true;
+		}
+	}
+	
+	// Dans cette fonction on compare les ordres des agents scout et on choisit le 
+	// plus proche en fesant somme de : valeur absolue de la difference des abscisses et
+	// valeur absolue de la difference des ordonnÃ©es (fonction calculateDistanceScore)
+	public void compareAndChooseOrder(ArrayList<Order> orders){
+		
+		int min = -1; // n'a pas encore de valeur mais en aura puisque minimum un ordre si 
+		// fonction est appelÃ©e.
+		
+		for (Order order : orders){
+			int distance = calculateDistanceScore(order.getPosition());
+			if (min == -1 || (distance < min) ){
+				min = calculateDistanceScore(order.getPosition());
+			}
+		}	
+	}
+
+	public void answerToScout(){
+		// vrmt necessaire ?
+		
+	
+	}
+	
+	int calculateDistanceScore(Int2D targetLocation){
+		
+		int x = Math.abs(this.location.x + targetLocation.x);
+		int y = Math.abs(this.location.y + targetLocation.y);
+		return x+y;
 	}
 }
