@@ -16,6 +16,8 @@ import sim.util.Int2D;
 import util.Constants;
 import util.Statics;
 
+import strategies.IStrategyMove;
+
 
 /**
  * 
@@ -24,7 +26,7 @@ import util.Statics;
  * 		Classe de base pour les agents sur la grille 
  * ----------------------------------------------------------------------------------
  */
-public abstract class AgentOnField implements Steppable{
+public abstract class AgentOnField implements Steppable,IStrategyMove{
 	
 	protected Stoppable stop;
 	
@@ -99,10 +101,10 @@ public abstract class AgentOnField implements Steppable{
 	}
 
 	/**
-	 * Recherche une case o� un agent peut aller 
+	 * Recherche une case où un agent peut aller 
 	 * @return -> Position idéale pour bouger
 	 */
-	private Int2D getNewLocation(){
+	public Int2D getNewLocation(){
 		/* Les variables */
 		ArrayList<Int2D> cells;
 		CaseColorListWrap lists = null;
@@ -135,8 +137,12 @@ public abstract class AgentOnField implements Steppable{
 		
 		/* Sinon on ne bouge pas */
 		return null;
-		
-		
+	}
+	
+	/** Strategie de base pour tout les agents lors des déplacements **/
+	@Override
+	public Color Strategy() {
+		return getColorAgent();
 	}
 	
 	/* Getteurs */

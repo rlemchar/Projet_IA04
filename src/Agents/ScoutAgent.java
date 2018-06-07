@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import model.Color;
 import model.CommunicationSystem;
-import model.GridModel;
 import model.Order;
 import model.PaintPot;
 import sim.engine.SimState;

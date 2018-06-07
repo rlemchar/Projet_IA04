@@ -16,17 +16,21 @@ import model.GridModel;
 import model.Order;
 import model.PaintPot;
 
-
-public class ColoringAgent extends AgentOnField implements Steppable {
+public class ColoringAgent extends AgentOnField implements Steppable{
 	/**
 	 * Serial version
 	 */
 	private static final long serialVersionUID = 4967689413678754350L;
 	
+	public enum Direction {
+		Nord,Sud,Est,Ouest
+	}
+	
 	/* Nombre de tubes de peinture */
 	private int numberOfTubeOfPaint;
 	
-	private boolean hasAdestination = false;
+	/* Booléen indiquant si l'agent a actuellement une destination précise où aller */
+	private boolean hasAdestination;
 	
 	/* Destination objectif de l'agent */
 	private Int2D destination;
@@ -35,6 +39,7 @@ public class ColoringAgent extends AgentOnField implements Steppable {
 	public ColoringAgent() {
 		super();
 		this.numberOfTubeOfPaint = 0;
+		this.hasAdestination = false;
 	}
 	
 	/**
@@ -44,6 +49,7 @@ public class ColoringAgent extends AgentOnField implements Steppable {
 	public ColoringAgent(Color colorAgent) {
 		super(colorAgent);
 		this.numberOfTubeOfPaint = 0;
+		this.hasAdestination = false;
 	}
 	
 	@Override
@@ -122,8 +128,43 @@ public class ColoringAgent extends AgentOnField implements Steppable {
 		}
 	}
 	
+	/**
+	 * Permet à un agent de se déplacer vers une destination précise
+	 */
 	public void moveTowardsDestination(){
-	
+		/* Variables locales */
+		Int2D tempCoord,offsetCoord; // offsetCoord -> offset pour le point haut gauche de la zone de déplacement possible
+		CaseColor[] adjacentCase;
+		Direction direction; // Enuméré permettant d'indiquer la direction vers la destination
+		ArrayList<CaseColor> tempForCase;
+		
+		/* On vérifie si l'agent a bien une destination précise 
+		 * ou si l'agent n'est pas déja à la bonne destination */
+		if(!this.hasAdestination || (this.destination.x == this.location.x && this.destination.y == this.location.y))
+			return;
+		
+		/* Initialisation de la direction */
+		direction = (this.destination.x < this.location.x) ? Direction.Nord : Direction.Sud;
+		
+		/* On se déplace sur nos cases si possible -> cases faisant partie d'un chemin possible */
+		while(this.steps != 0) {
+			/* Init pour le point haut gauche */
+			offsetCoord = new Int2D((this.location.x == 0) ? 0 : 1,(this.location.y == 0) ? 0 : 1);
+			tempCoord = new Int2D(this.location.x - offsetCoord.x,this.location.y - offsetCoord.y);
+			
+			/* On prend une zone de 1 centré sur la position actuelle 
+			 * puis on récupère les cases à coté qui sont sur un chemin possible */
+			adjacentCase  = Statics.GetZoneColor(this.grid,tempCoord, 3, 3).stream()
+					.filter(caseColor -> (caseColor.getX() == this.location.x ^ caseColor.getY() == this.location.y) 
+								&& (direction == Direction.Nord) ? caseColor.getX() <= this.location.x : caseColor.getX() >= this.location.x
+					)
+					.toArray(CaseColor[]::new);
+			
+			/* On se déplace selon la stratégie */
+			
+			
+		}
+		
 	}
 		
 	public void compareDestinations(){

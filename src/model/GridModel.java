@@ -51,7 +51,7 @@ public class GridModel extends SimState {
 	private void InitGridColor(){
 		for(int x = 0; x < Constants.GRID_SIZE;x++){
 			for(int y = 0;y < Constants.GRID_SIZE;y++){
-				grid.setObjectLocation(new CaseColor(Color.None), x, y);
+				grid.setObjectLocation(new CaseColor(Color.None,x,y), x, y);
 			}
 		}
 	}
