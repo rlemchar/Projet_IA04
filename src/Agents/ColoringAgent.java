@@ -12,7 +12,6 @@ import java.util.stream.Stream;
 import model.CaseColor;
 import model.Color;
 import model.CommunicationSystem;
-import model.GridModel;
 import model.Order;
 import model.PaintPot;
 
@@ -21,10 +20,6 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	 * Serial version
 	 */
 	private static final long serialVersionUID = 4967689413678754350L;
-	
-	public enum Direction {
-		Nord,Sud,Est,Ouest
-	}
 	
 	/* Nombre de tubes de peinture */
 	private int numberOfTubeOfPaint;
@@ -39,7 +34,8 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	public ColoringAgent() {
 		super();
 		this.numberOfTubeOfPaint = 0;
-		this.hasAdestination = false;
+		this.hasAdestination = true;
+		this.destination = new Int2D(25,25);
 	}
 	
 	/**
@@ -49,23 +45,14 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	public ColoringAgent(Color colorAgent) {
 		super(colorAgent);
 		this.numberOfTubeOfPaint = 0;
-		this.hasAdestination = false;
+		this.hasAdestination = true;
+		this.destination = new Int2D(25,25);
 	}
 	
 	@Override
 	public void step(SimState state) {
-		this.grid = (GridModel) state;
-		/*
-		if (!hasAdestination){
-			if (isThereNewOrders){
-				moveTowardsDestination();
-			}else{
-				move();
-			}
-		}else{
-			moveTowardsDestination();
-		}
-		*/
+		super.step(state);
+		this.moveTowardsDestination();
 	}
 	
 	public boolean receiveInfoFromScout(){
@@ -133,42 +120,125 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	 */
 	public void moveTowardsDestination(){
 		/* Variables locales */
-		Int2D tempCoord,offsetCoord; // offsetCoord -> offset pour le point haut gauche de la zone de déplacement possible
-		CaseColor[] adjacentCase;
-		Direction direction; // Enuméré permettant d'indiquer la direction vers la destination
-		ArrayList<CaseColor> tempForCase;
+		Int2D[] offsets = new Int2D[2]; // offset pour les cases adjacentes à récupérer -> 0 pour l'axe x , 1 pour l'axe y
+		Int2D distanceCoordTemp;
 		
 		/* On vérifie si l'agent a bien une destination précise 
 		 * ou si l'agent n'est pas déja à la bonne destination */
 		if(!this.hasAdestination || (this.destination.x == this.location.x && this.destination.y == this.location.y))
 			return;
 		
-		/* Initialisation de la direction */
-		direction = (this.destination.x < this.location.x) ? Direction.Nord : Direction.Sud;
-		
 		/* On se déplace sur nos cases si possible -> cases faisant partie d'un chemin possible */
-		while(this.steps != 0) {
-			/* Init pour le point haut gauche */
-			offsetCoord = new Int2D((this.location.x == 0) ? 0 : 1,(this.location.y == 0) ? 0 : 1);
-			tempCoord = new Int2D(this.location.x - offsetCoord.x,this.location.y - offsetCoord.y);
+		while(this.steps > 0) {
+			/* Init des offset  */
+			if(this.destination.x < this.location.x) {
+				offsets[0] = new Int2D(-1,0);
+			}
+			else
+				offsets[0] = new Int2D((this.destination.x == this.location.x) ? 0 : 1,0);
 			
-			/* On prend une zone de 1 centré sur la position actuelle 
-			 * puis on récupère les cases à coté qui sont sur un chemin possible */
-			adjacentCase  = Statics.GetZoneColor(this.grid,tempCoord, 3, 3).stream()
-					.filter(caseColor -> (caseColor.getX() == this.location.x ^ caseColor.getY() == this.location.y) 
-								&& (direction == Direction.Nord) ? caseColor.getX() <= this.location.x : caseColor.getX() >= this.location.x
-					)
-					.toArray(CaseColor[]::new);
+			if(this.destination.y < this.location.y) {
+				offsets[1] = new Int2D(0,-1);
+			}
+			else
+				offsets[1] = new Int2D(0,(this.destination.y == this.location.y) ? 0 : 1);
+			
+			
+			/* Init des distances selon les coordonnées */
+			distanceCoordTemp = new Int2D(Math.abs(this.destination.x - this.location.x)
+										 ,Math.abs(this.destination.y - this.location.y)); 
 			
 			/* On se déplace selon la stratégie */
-			
-			
+			if(MoveOnNewCellAccordingToColor(StrategyMove(),offsets,distanceCoordTemp)) {
+				continue;
+			}
+			/* On va sur une case retourné par OtherWise */
+			else {
+				if(MoveOnNewCellAccordingToColor(OtherWiseMove(),offsets,distanceCoordTemp))
+					continue;
+				else if(MoveOnNewCellAccordingToColor(WorstCaseMove(),offsets,distanceCoordTemp))
+					continue;
+				else
+					// On ne peut plus bouger 
+					break;
+			}
 		}
-		
 	}
 		
 	public void compareDestinations(){
 	
+	}
+	
+	/**
+	 * Se déplace sur une nouvelle case selon la couleur désiré
+	 * @param desiredColor -> Couleur sur laquelle on souhaite se déplacer
+	 * @param offset -> offset pour repérer les cases adjacentes
+	 * @param dist -> distance selon chaque axe entre la destination et la position actuelle
+	 */
+	private boolean MoveOnNewCellAccordingToColor(Color desiredColor,Int2D[] offsets,Int2D dist) {
+		/* Variable locale */
+		boolean isSameColor;
+		int numberOfSteps;
+		
+		/* Sécurité d'utilisation */
+		if(offsets.length != 2) {
+			return false;
+		}
+		
+		/* Init number of steps */
+		if(desiredColor == this.colorAgent)
+			numberOfSteps = 1;
+		else
+			numberOfSteps = (desiredColor == Color.None) ? 2 : 3;
+		
+		/* On quitte si on ne peut pas se déplacer */
+		if(this.steps < numberOfSteps)
+			return false;
+		
+		/* On regarde si les cases sont de même couleur */
+		isSameColor = true;
+		Color prec = Color.None;
+		for(int i = 0; i < offsets.length; i++)
+			if(i != 0) {
+				isSameColor &= 
+					Statics.GetColorOfCase(this.grid,this.location.x,this.location.y,offsets[i].x,offsets[i].y) == prec;
+			}
+			else
+				prec = Statics.GetColorOfCase(this.grid,this.location.x,this.location.y,offsets[i].x,offsets[i].y);
+		
+		/* Si cases de la même couleur */
+		if(isSameColor) {
+			if(Statics.GetColorOfCase(this.grid,this.location) == desiredColor) {
+				// On se déplace le long de la coordonnée où il y a le plus de distance à parcourir
+				if(dist.x > dist.y)
+					this.setNewPosition(this.location.x + offsets[0].x,this.location.y);
+				else if(dist.x < dist.y)
+					this.setNewPosition(this.location.x,this.location.y + offsets[1].y);
+				else { // On se déplace aléatoirement
+					if(this.grid.random.nextBoolean())
+						this.setNewPosition(this.location.x + offsets[0].x,this.location.y);
+					else
+						this.setNewPosition(this.location.x,this.location.y + offsets[1].y);
+				}
+				this.steps -= numberOfSteps;
+				return true;
+			}
+			/* On gère ce cas à un plus haut niveau que cette méthode à cause des steps */
+			else {
+				return false;
+			}
+		}
+		/* On cherche une case qui est de la même couleur que celle désiré */
+		else {
+			for(int i = 0;i < offsets.length;i++) {
+				if(Statics.GetColorOfCase(this.grid, this.location.x + offsets[i].x,this.location.y + offsets[i].y) == desiredColor) {
+					this.setNewPosition(this.location.x + offsets[i].x, this.location.x + offsets[i].y);
+					this.steps -= numberOfSteps;
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 	
 	/**

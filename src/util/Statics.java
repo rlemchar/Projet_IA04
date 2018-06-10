@@ -30,7 +30,7 @@ public final class Statics {
 	}
 	
 	/**
-	 * Permet de renvoyer tous les couleurs des cases pour une zone donn�e en param�tre
+	 * Permet de renvoyer tous les couleurs des cases pour une zone donnée en param�tre
 	 * @param grid -> Grille de simulation
 	 * @param pointTopLeft -> Point haut gauche de la zone
 	 * @param sizeX -> Longueur
@@ -54,7 +54,29 @@ public final class Statics {
 	 * @return -> La couleur de la case
 	 */
 	public static Color GetColorOfCase(GridModel grid,Int2D location) {
-		return Statics.GetCaseColor(grid.getGrid().getObjectsAtLocation(location.x, location.y)).getColor();
+		return Statics.GetColorOfCase(grid,location.x,location.y);
+	}
+	
+	/**
+	 * @param grid -> Grille de simulation
+	 * @param x -> ordonnée
+	 * @param y -> abscisse
+	 * @return
+	 */
+	public static Color GetColorOfCase(GridModel grid,int x,int y) {
+		return Statics.GetCaseColor(grid.getGrid().getObjectsAtLocation(x,y)).getColor();
+	}
+	
+	/**
+	 * @param grid
+	 * @param x
+	 * @param y
+	 * @param offset_x
+	 * @param offset_y
+	 * @return
+	 */
+	public static Color GetColorOfCase(GridModel grid,int x,int y,int offset_x,int offset_y) {
+		return Statics.GetColorOfCase(grid, x + offset_x,y + offset_y);
 	}
 	
 	/**

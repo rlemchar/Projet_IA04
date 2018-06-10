@@ -71,8 +71,7 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 	public void step(SimState state) {
 		this.grid = (GridModel) state;
 		this.location = this.grid.getGrid().getObjectLocation(this);
-		Int2D newlocation = new Int2D(this.location.x +1, this.location.y);
-		this.grid.getGrid().setObjectLocation(this, newlocation);
+		this.steps = Constants.MAX_STEPS;
 	}
 	
 	/* Permet à un agent de bouger */
@@ -141,8 +140,35 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 	
 	/** Strategie de base pour tout les agents lors des déplacements **/
 	@Override
-	public Color Strategy() {
+	public Color StrategyMove() {
 		return getColorAgent();
+	}
+	
+	@Override 
+	public Color OtherWiseMove() {
+		return Color.None;
+	}
+	
+	@Override 
+	public Color WorstCaseMove() {
+		return this.oppositeColor;
+	}
+	
+	/**
+	 * Déplace l'agent sur une nouvelle case
+	 * @param location -> Int2D
+	 */
+	public void setNewPosition(Int2D location) {
+		this.grid.getGrid().setObjectLocation(this, location);
+	}
+	
+	/**
+	 * Déplace l'agent sur une nouvelle case
+	 * @param x
+	 * @param y
+	 */
+	public void setNewPosition(int x,int y) {
+		this.grid.getGrid().setObjectLocation(this, x, y);
 	}
 	
 	/* Getteurs */
