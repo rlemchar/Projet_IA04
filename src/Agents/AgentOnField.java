@@ -89,15 +89,59 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 	}
 	
 	/* Permet à un agent de percevoir */
+	
+	public ArrayList<Integer> determineLimits(){      // determine les limites de la perception en prenant en compte la taille de la grille
+		
+		ArrayList<Integer> limits = new ArrayList<Integer>();
+		
+		if (this.location.x < this.powerOfPerception) {
+			limits.add(0);
+		}
+		else {
+			limits.add(this.location.x - this.powerOfPerception);
+		}
+		if (this.location.x > Constants.GRID_SIZE - this.powerOfPerception) {
+			limits.add(Constants.GRID_SIZE);
+		}
+		else {
+			limits.add(this.location.x + this.powerOfPerception);
+		}
+		
+		if (this.location.y < this.powerOfPerception) {
+			limits.add(0);
+		}
+		else {
+			limits.add(this.location.y - this.powerOfPerception);
+		}
+		if (this.location.y > Constants.GRID_SIZE - this.powerOfPerception) {
+			limits.add(Constants.GRID_SIZE);
+		}
+		else {
+			limits.add(this.location.y + this.powerOfPerception);
+		}
+		
+		return limits;
+	}
+	
+	
+	
 	public ArrayList<Int2D> perceive(){
+		ArrayList<Integer> limits = new ArrayList<Integer>();
+		limits = determineLimits();
+		Integer lower_bound_x = limits.get(0);
+		Integer upper_bound_x = limits.get(1);
+		Integer lower_bound_y = limits.get(2);
+		Integer upper_bound_y = limits.get(3);
+
 		ArrayList<Int2D> allCoordsFromPerception = new ArrayList<Int2D>();
-		for(int x = this.location.x - this.powerOfPerception; x < this.location.x + this.powerOfPerception;x++){
-			for(int y = this.location.y - this.powerOfPerception;y < this.location.y + this.powerOfPerception;y++){
+		for(int x = lower_bound_x; x <= upper_bound_x;x++){
+			for(int y =  lower_bound_y; y <= upper_bound_y;y++){
 				allCoordsFromPerception.add(new Int2D(x,y));
 			}
 		}
 		return allCoordsFromPerception;
 	}
+
 
 	/**
 	 * Recherche une case où un agent peut aller 

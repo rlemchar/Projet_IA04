@@ -1,6 +1,7 @@
 package Agents;
 
 import java.util.ArrayList;
+import util.Constants;
 
 import model.Color;
 import model.CommunicationSystem;
@@ -15,8 +16,10 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 	
 	ArrayList<Int2D> lastPerception;
 	
+	
 	public ScoutAgent() {
 		super();
+		this.powerOfPerception = Constants.PERCEPTION_FOR_SCOUT_AGENT;
 	}
 	
 	public ScoutAgent(Color colorAgent) {
@@ -40,6 +43,7 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 		return useFilterStrategy1(toFilter);
 	}
 
+	
 	public void informOthers(ArrayList<Int2D> perceivedTargets){
 		
 		if (!perceivedTargets.isEmpty()){
@@ -47,7 +51,7 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 			ArrayList<ColoringAgent> agentsToInform = new ArrayList<ColoringAgent>();
 			
 			// On regarde si des agents colorieur sont présents dans le champ de perception
-			for (Int2D perceivedCell : this.lastPerception){
+			for (Int2D perceivedCell : this.lastPerception){  
 				Bag objects = this.grid.getGrid().getObjectsAtLocation(perceivedCell.x, perceivedCell.y);
 				if (objects != null){
 					for (Object obj : objects){
@@ -78,7 +82,7 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 		
 		ArrayList<Int2D> paintPotsLocations = new ArrayList<Int2D>();
 		
-		for (Int2D perceivedCell : this.lastPerception){
+		for (Int2D perceivedCell : this.lastPerception){    
 			Bag objects = this.grid.getGrid().getObjectsAtLocation(perceivedCell.x, perceivedCell.y);
 			if (objects != null){
 				for (Object obj : objects){
