@@ -31,9 +31,8 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 	@Override
 	public void step(SimState state) {
 		super.step(state);
-		// move();
-		// this.lastPerception = perceive();
-		// informOthers(filterInformation(this.lastPerception));
+		moveRandom();
+
 	}
 	
 	ArrayList<Int2D> filterInformation(ArrayList<Int2D> toFilter){
@@ -46,7 +45,7 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 		
 			ArrayList<ColoringAgent> agentsToInform = new ArrayList<ColoringAgent>();
 			
-			// On regarde si des agents colorieur sont prÃ©sents dans le champ de perception
+			// On regarde si des agents colorieur sont présents dans le champ de perception
 			for (Int2D perceivedCell : this.lastPerception){
 				Bag objects = this.grid.getGrid().getObjectsAtLocation(perceivedCell.x, perceivedCell.y);
 				if (objects != null){

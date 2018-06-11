@@ -36,6 +36,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		this.numberOfTubeOfPaint = 0;
 		this.hasAdestination = true;
 		this.destination = new Int2D(25,25);
+		this.powerOfPerception = Constants.PERCEPTION_FOR_COLORING_AGENT;
 	}
 	
 	/**
@@ -120,7 +121,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	 */
 	public void moveTowardsDestination(){
 		/* Variables locales */
-		Int2D[] offsets = new Int2D[2]; // offset pour les cases adjacentes à récupérer -> 0 pour l'axe x , 1 pour l'axe y
+		Int2D[] offsets = new Int2D[2]; // offset pour les cases adjacentes à r�cup�rer -> 0 pour l'axe x , 1 pour l'axe y
 		Int2D distanceCoordTemp;
 		
 		/* On vérifie si l'agent a bien une destination précise 
@@ -128,7 +129,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		if(!this.hasAdestination || (this.destination.x == this.location.x && this.destination.y == this.location.y))
 			return;
 		
-		/* On se déplace sur nos cases si possible -> cases faisant partie d'un chemin possible */
+		/* On se d�place sur nos cases si possible -> cases faisant partie d'un chemin possible */
 		while(this.steps > 0) {
 			/* Init des offset  */
 			if(this.destination.x < this.location.x) {
@@ -144,7 +145,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 				offsets[1] = new Int2D(0,(this.destination.y == this.location.y) ? 0 : 1);
 			
 			
-			/* Init des distances selon les coordonnées */
+			/* Init des distances selon les coordonn�es */
 			distanceCoordTemp = new Int2D(Math.abs(this.destination.x - this.location.x)
 										 ,Math.abs(this.destination.y - this.location.y)); 
 			

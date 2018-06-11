@@ -74,18 +74,33 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 		this.steps = Constants.MAX_STEPS;
 	}
 	
-	/* Permet à un agent de bouger */
-	public void move(){
-		/* Les variables */
-		Int2D newLocation;
+
+	public void moveRandom(){
+		Int2D newLocation = this.location;
+		Random generator = new Random();
+		int rand = generator.nextInt(4);
 		
-		/* On bouge seulement si la grille est disponible */
-		if(this.grid != null){
-			newLocation = getNewLocation();
-			if(newLocation != null) {
-				this.grid.getGrid().setObjectLocation(this, newLocation);
-			}
+		switch(rand)
+		{
+			case 0:
+				if(this.location.x != 50) newLocation =  new Int2D(this.location.x + 1, this.location.y);
+				break;
+			case 1:
+				if(this.location.x != 0) newLocation =  new Int2D(this.location.x - 1, this.location.y);
+				break;
+			case 2:
+				if(this.location.y != 50) newLocation =  new Int2D(this.location.x, this.location.y + 1);
+				break;
+			case 3:
+				if(this.location.y != 0) newLocation =  new Int2D(this.location.x, this.location.y - 1);
+				break;
+
 		}
+		
+		
+		System.out.println(newLocation);
+		this.grid.getGrid().setObjectLocation(this, newLocation);
+		
 	}
 	
 	/* Permet à un agent de percevoir */
