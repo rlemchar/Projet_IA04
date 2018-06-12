@@ -4,6 +4,7 @@ import java.awt.Color;
 import javax.swing.JFrame;
 
 import Agents.AgentOnField;
+import Agents.ScoutAgent;
 import model.GridModel;
 import model.PaintPot;
 import sim.display.Controller;
@@ -82,9 +83,9 @@ public class GridGUI extends GUIState {
 	private IntLabel getIntLabelForObject(AgentOnField agent) throws IllegalArgumentException{ 
 		switch(agent.getColorAgent()) {
 			case Blue:
-				return getIntLabelForObject(Color.BLUE,agent.toString());
+				return getIntLabelForObject(agent instanceof ScoutAgent ? Color.CYAN : Color.BLUE);
 			case Red:
-				return getIntLabelForObject(Color.RED,agent.toString());
+				return getIntLabelForObject(agent instanceof ScoutAgent ? Color.ORANGE : Color.RED);
 			default:
 				throw new IllegalArgumentException("L'agent doit avoir une couleur !");
 		

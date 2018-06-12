@@ -69,6 +69,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 				this.order = this.compareAndChooseOrder(CommunicationSystem.consultOrders(this));
 				this.hasAdestination = true;
 			}
+			System.out.println(this.order.toString());
 			this.moveTowardsDestination();
 		}
 		else{
@@ -79,23 +80,21 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		}
 		
 		/* Cas où on est arrivé à destination */
-		if(this.location == this.order.getPosition()){
-			switch(this.order.getTargetType()){
-				case land:
-					/* L'agent cherche une case à proximité à colorier */
-					break;
-				case paintPot:
-					/* Il récupère un tube de peinture */
-					this.rechargePaint(Statics.getPaintPot(this.grid,this.location));
-					break;
-				default:
-					break;
+		if(this.hasAdestination){
+			if(this.location == this.order.getPosition()){
+				switch(this.order.getTargetType()){
+					case land:
+						/* L'agent cherche une case à proximité à colorier */
+						break;
+					case paintPot:
+						/* Il récupère un tube de peinture */
+						this.rechargePaint(Statics.getPaintPot(this.grid,this.location));
+						break;
+					default:
+						break;
+				}
 			}
 		}
-	}
-	
-	public boolean receiveInfoFromScout(){
-		return false;
 	}
 	
 	/**
@@ -307,7 +306,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	
 	// Partie communication / Execution ordre
 	
-	public Boolean isThereNewOrders(){
+	public boolean isThereNewOrders(){
 		
 		ArrayList<Order> lastOrders = CommunicationSystem.consultOrders(this);
 		if (lastOrders.isEmpty()){

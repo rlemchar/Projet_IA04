@@ -54,11 +54,14 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 				mostPertinentPaintPot = getMostPertinentLandLocation(coloringAgent);
 				mostPertinentLand = getMostPertinentLandLocation(coloringAgent);
 				
-				if (mostPertinentPaintPot!=null){
+				System.out.println(mostPertinentPaintPot);
+				System.out.println(mostPertinentLand);
+				
+				if (mostPertinentPaintPot != null){
 					Order order = new Order(this,coloringAgent, mostPertinentPaintPot,TargetType.paintPot);
 					CommunicationSystem.addOrder(order);
 				}
-				if (mostPertinentLand!=null){
+				if (mostPertinentLand != null){
 					Order order = new Order(this,coloringAgent, mostPertinentLand,TargetType.land);
 					CommunicationSystem.addOrder(order);
 				}
@@ -132,11 +135,7 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 	void detectRelevantInformation(){
 		this.lastPerception = perceive();
 		this.lastPaintPotDetected = filterPaintPots();
-		if (this.colorAgent == Color.Red){
-			this.lastOwnLandDetected = Statics.GetColorOfCases(this.grid, this.lastPerception).getRed();
-		}else{
-			this.lastOwnLandDetected = Statics.GetColorOfCases(this.grid, this.lastPerception).getBlue();
-		}
+		this.lastOwnLandDetected = Statics.GetColorOfCases(this.grid, this.lastPerception).getOneList(this.colorAgent);	
 		this.lastAgentsDetected = filterAgents();
 	}
 	
