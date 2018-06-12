@@ -70,7 +70,6 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 				this.order = this.compareAndChooseOrder(CommunicationSystem.consultOrders(this));
 				this.hasAdestination = true;
 			}
-			System.out.println(this.order.toString());
 			this.moveTowardsDestination();
 		}
 		else{

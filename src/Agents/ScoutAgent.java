@@ -43,6 +43,9 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 	public void step(SimState state) {
 		super.step(state);
 		moveRandom();
+		this.detectRelevantInformation();
+		this.informOthers();
+		this.resetDetections();
 		
 		
 	}
@@ -147,12 +150,9 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 			Int2D mostPertinentLand;
 			
 			for (ColoringAgent coloringAgent : this.lastAgentsDetected){
-				mostPertinentPaintPot = getMostPertinentLandLocation(coloringAgent);
+				mostPertinentPaintPot = getMostPertinentPaintPotLocation(coloringAgent);
 				mostPertinentLand = getMostPertinentLandLocation(coloringAgent);
-				
-				System.out.println(mostPertinentPaintPot);
-				System.out.println(mostPertinentLand);
-				
+
 				if (mostPertinentPaintPot != null){
 					Order order = new Order(this,coloringAgent, mostPertinentPaintPot,TargetType.paintPot);
 					CommunicationSystem.addOrder(order);
