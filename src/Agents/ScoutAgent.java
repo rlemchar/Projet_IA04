@@ -44,6 +44,9 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 		super.step(state);
 		this.lastPerception = perceive();
 		moveRandom();
+		this.detectRelevantInformation();
+		this.informOthers();
+		this.resetDetections();
 		
 	}
 	
