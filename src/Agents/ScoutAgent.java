@@ -41,9 +41,9 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 	public void step(SimState state) {
 		super.step(state);
 		moveRandom();
-		detectRelevantInformation();
-		informOthers();
-		resetDetections();
+		this.detectRelevantInformation();
+		this.informOthers();
+		this.resetDetections();
 	}
 	
 	public void informOthers(){
