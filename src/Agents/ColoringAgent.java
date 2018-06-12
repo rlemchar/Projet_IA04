@@ -48,7 +48,7 @@ public class ColoringAgent extends AgentOnField implements Steppable {
 	
 	@Override
 	public void step(SimState state) {
-		this.grid = (GridModel) state;
+		super.step(state);
 		/*
 		if (!hasAdestination){
 			if (isThereNewOrders){
