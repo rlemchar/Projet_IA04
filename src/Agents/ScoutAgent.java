@@ -45,14 +45,14 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 	@Override
 	public void step(SimState state) {
 		super.step(state);
+		this.lastPerception = perceive();
 		moveRandom();
+		
 	}
 	
-	@Override
-	public void moveRandom(){		
-		Int2D newLocation = this.location;
+	private Int2D moveRandom3() {
+		Int2D newLocation = null;
 
-		
 		//Strat�gie 3 : mouvement al�atoire
 		Random generator = new Random();
 		int rand = generator.nextInt(4);
@@ -72,24 +72,22 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 				newLocation =  new Int2D(this.location.x, this.location.y - 1);
 				break;
 		}
-		
-		
-		
-		
+		return newLocation;
+	}
+	
+	private Int2D moveRandom2() {
+		Int2D newLocation = null;
+
 		//Strat�gie 2 : Si on a un autre Scout Agent dans son champs de vision
-		this.lastPerception = this.perceive();
-		System.out.print(lastPerception);
 		for(Int2D cell : this.lastPerception) {
-			System.out.print("Coucou");
 			Bag objects = this.grid.getGrid().getObjectsAtLocation(cell.x, cell.y);
 			if (objects != null){
 				ScoutAgent secondScout = Statics.GetScoutAgent(objects);
-				
-				System.out.print(secondScout);
-				if (secondScout != null && secondScout.getColorAgent() == this.colorAgent){
+				if (secondScout != null && secondScout != this && secondScout.getColorAgent() == this.colorAgent){
 					// Il y'a un agent scout dans la case, on s'en �loigner
 					int distanceX = cell.x  - this.location.x; // Si > 0 aller � gauche
 					int distanceY = cell.y - this.location.y;  // Si > 0 aller en bas
+					
 					if(Math.abs(distanceX) > Math.abs(distanceY)){
 						if(distanceY > 0)
 							newLocation =  new Int2D(this.location.x, this.location.y - 1);
@@ -100,14 +98,19 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 						if(distanceX > 0)
 							newLocation =  new Int2D(this.location.x - 1, this.location.y);
 						else
-							newLocation =  new Int2D(this.location.x + 1, this.location.y + 1);
+							newLocation =  new Int2D(this.location.x + 1, this.location.y);
 					}
 				}
 			}
 		}
 		
+		return newLocation;
+	}
+	
+	private Int2D moveRandom1() {
+		Int2D newLocation = null;
 		
-		//Strat�gie 3 : Si on est du bord
+		//Strat�gie 1 : Si on est du bord
 		if(this.location.x >= Constants.GRID_SIZE - Constants.PERCEPTION_FOR_SCOUT_AGENT)
 			newLocation =  new Int2D(this.location.x - 1, this.location.y);
 		if(this.location.x <= Constants.PERCEPTION_FOR_SCOUT_AGENT)
@@ -117,14 +120,26 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 		if(this.location.y <= Constants.PERCEPTION_FOR_SCOUT_AGENT)
 			newLocation =  new Int2D(this.location.x, this.location.y + 1);
 		
+		return newLocation;
+	}
+	
+	
+	
+	@Override
+	public void moveRandom(){		
 		
-		
-		
+		Int2D newLocation = this.moveRandom3();
+//		
+		if(this.moveRandom2() != null) newLocation = this.moveRandom2();
+//		
+		if(this.moveRandom1() != null) newLocation = this.moveRandom1();
+//		
 		this.grid.getGrid().setObjectLocation(this, newLocation);
 		
 		detectRelevantInformation();
 		informOthers();
 		resetDetections();
+		
 	}
 	
 	public void informOthers(){

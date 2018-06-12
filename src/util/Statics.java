@@ -102,8 +102,6 @@ public final class Statics {
 		CaseColorListWrap result = new CaseColorListWrap();
 		cellsToAnalyse.stream()
 			.forEach(cell -> {
-				System.out.println("coord X :" + cell.x );
-				System.out.println("coord Y :" + cell.y );
 				CaseColor colorOfCase = Statics.GetCaseColor(grid.getGrid().getObjectsAtLocation(cell.x, cell.y));
 				switch(colorOfCase.getColor()) {
 					case Blue:
