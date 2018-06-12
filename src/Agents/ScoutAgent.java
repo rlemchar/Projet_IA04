@@ -42,8 +42,8 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 	@Override
 	public void step(SimState state) {
 		super.step(state);
-		this.lastPerception = perceive();
 		moveRandom();
+		
 		
 	}
 	
