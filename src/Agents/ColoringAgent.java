@@ -28,7 +28,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	private boolean hasAdestination;
 	
 	/* Destination objectif de l'agent */
-	private Int2D destination;
+	private Order order;
 	
 	/* Pouvoir de coloration */
 	private int powerOfColoration;
@@ -37,8 +37,8 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	public ColoringAgent() {
 		super();
 		this.numberOfTubeOfPaint = 0;
-		this.hasAdestination = true;
-		this.destination = new Int2D(25,25);
+		this.hasAdestination = false;
+		this.order = null;
 		this.powerOfPerception = Constants.PERCEPTION_FOR_COLORING_AGENT;
 		this.powerOfColoration = Constants.COLORATION_POWER_FOR_COLORING_AGENT;
 	}
@@ -50,14 +50,48 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	public ColoringAgent(Color colorAgent) {
 		super(colorAgent);
 		this.numberOfTubeOfPaint = 0;
-		this.hasAdestination = true;
-		this.destination = new Int2D(25,25);
+		this.hasAdestination = false;
+		this.order = null;
 	}
 	
 	@Override
 	public void step(SimState state) {
 		super.step(state);
-		this.moveTowardsDestination();
+		
+		/* Bouger */
+		if(this.isThereNewOrders()){
+			if(this.hasAdestination){			
+				/* Compare entre l'ordre actuel et les nouveaux */
+				this.chooseBetweenDestinationAndNewOrders(CommunicationSystem.consultOrders(this));
+			}
+			else{
+				/* On récupère le nouvel ordre */
+				this.order = this.compareAndChooseOrder(CommunicationSystem.consultOrders(this));
+				this.hasAdestination = true;
+			}
+			this.moveTowardsDestination();
+		}
+		else{
+			if(this.hasAdestination)
+				this.moveTowardsDestination();
+			else
+				this.moveRandom();
+		}
+		
+		/* Cas où on est arrivé à destination */
+		if(this.location == this.order.getPosition()){
+			switch(this.order.getTargetType()){
+				case land:
+					/* L'agent cherche une case à proximité à colorier */
+					break;
+				case paintPot:
+					/* Il récupère un tube de peinture */
+					this.rechargePaint(Statics.getPaintPot(this.grid,this.location));
+					break;
+				default:
+					break;
+			}
+		}
 	}
 	
 	public boolean receiveInfoFromScout(){
@@ -130,33 +164,28 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		
 		/* On vÃ©rifie si l'agent a bien une destination prÃ©cise 
 		 * ou si l'agent n'est pas dÃ©ja Ã  la bonne destination */
-		if(this.destination.x == this.location.x && this.destination.y == this.location.y)
+		if(!(this.hasAdestination) || this.order.getPosition().x == this.location.x && this.order.getPosition().y == this.location.y)
 			return;
-		
-		if(!this.hasAdestination){
-			if(this.isThereNewOrders())
-				this.compareAndChooseOrder(CommunicationSystem.consultOrders(this));
-		}
 		
 		/* On se dï¿½place sur nos cases si possible -> cases faisant partie d'un chemin possible */
 		while(this.steps > 0) {
 			/* Init des offset  */
-			if(this.destination.x < this.location.x) {
+			if(this.order.getPosition().x < this.location.x) {
 				offsets[0] = new Int2D(-1,0);
 			}
 			else
-				offsets[0] = new Int2D((this.destination.x == this.location.x) ? 0 : 1,0);
+				offsets[0] = new Int2D((this.order.getPosition().x == this.location.x) ? 0 : 1,0);
 			
-			if(this.destination.y < this.location.y) {
+			if(this.order.getPosition().y < this.location.y) {
 				offsets[1] = new Int2D(0,-1);
 			}
 			else
-				offsets[1] = new Int2D(0,(this.destination.y == this.location.y) ? 0 : 1);
+				offsets[1] = new Int2D(0,(this.order.getPosition().y == this.location.y) ? 0 : 1);
 			
 			
 			/* Init des distances selon les coordonnï¿½es */
-			distanceCoordTemp = new Int2D(Math.abs(this.destination.x - this.location.x)
-										 ,Math.abs(this.destination.y - this.location.y)); 
+			distanceCoordTemp = new Int2D(Math.abs(this.order.getPosition().x - this.location.x)
+										 ,Math.abs(this.order.getPosition().y - this.location.y)); 
 			
 			/* On se dÃ©place selon la stratÃ©gie */
 			if(MoveOnNewCellAccordingToColor(StrategyMove(),offsets,distanceCoordTemp)) {
@@ -224,7 +253,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 					this.setNewPosition(this.location.x + offsets[0].x,this.location.y);
 				else if(dist.x < dist.y)
 					this.setNewPosition(this.location.x,this.location.y + offsets[1].y);
-				else { // On se dÃ©place alÃ©atoirement
+				else { // On se déplace aléatoirement
 					if(this.grid.random.nextBoolean())
 						this.setNewPosition(this.location.x + offsets[0].x,this.location.y);
 					else
@@ -292,17 +321,43 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	// Dans cette fonction on compare les ordres des agents scout et on choisit le 
 	// plus proche en fesant somme de : valeur absolue de la difference des abscisses et
 	// valeur absolue de la difference des ordonnÃ©es (fonction calculateDistanceScore)
-	public void compareAndChooseOrder(ArrayList<Order> orders){
+	public Order compareAndChooseOrder(ArrayList<Order> orders){
 		
 		int min = -1; // n'a pas encore de valeur mais en aura puisque minimum un ordre si 
 		// fonction est appelÃ©e.
+		Order result = null;
 		
 		for (Order order : orders){
 			int distance = calculateDistanceScore(order.getPosition());
 			if (min == -1 || (distance < min) ){
 				min = calculateDistanceScore(order.getPosition());
+				result = order;
 			}
-		}	
+		}
+		
+		return result;
+		
+	}
+	
+	/**
+	 * Permet de choisir entre la destination/ objectif actuelle et une destination parmi les ordres
+	 * @param orders -> Les nouveaux ordres
+	 */
+	private void chooseBetweenDestinationAndNewOrders(ArrayList<Order> orders){
+		/* Si l'ordre est de type "pot de peinture" et que l'agent est déja chargé, on ignore l'ordre */
+		
+		
+		
+		/* Récupération de la destination la plus proche parmi les ordres */
+		Order bestOrder = this.compareAndChooseOrder(orders);
+		
+		/* Récupération des distances par rapport à l'agent */
+		int dist_order = this.calculateDistanceScore(bestOrder.getPosition());
+		int dist_destination = this.calculateDistanceScore(this.order.getPosition());
+		
+		/* Mis à jour si le nouvel ordre est meilleur */
+		if(dist_order < dist_destination)
+			this.order.setPosition(bestOrder.getPosition());
 	}
 
 	public void answerToScout(){
@@ -311,7 +366,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	
 	}
 	
-	int calculateDistanceScore(Int2D targetLocation){
+	private int calculateDistanceScore(Int2D targetLocation){
 		
 		int x = Math.abs(this.location.x + targetLocation.x);
 		int y = Math.abs(this.location.y + targetLocation.y);

@@ -29,9 +29,26 @@ public class Order {
 		return intendedAgent;
 	}
 
+	/**
+	 * Retourne la position souhaité pour l'ordre
+	 * @return
+	 */
 	public Int2D getPosition() {
 		return position;
 	}
+	
+	public void setPosition(Int2D position){
+		this.position = position;
+	}
+	
+	/**
+	 * Retourne le type d'ordre
+	 * @return
+	 */
+	public TargetType getTargetType(){
+		return this.targetType;
+	}
+	
 	
 	
 

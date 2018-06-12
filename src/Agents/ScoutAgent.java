@@ -20,9 +20,6 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 	ArrayList<Int2D> lastOwnLandDetected;
 	ArrayList<ColoringAgent> lastAgentsDetected;
 	
-	
-	
-	
 	public ScoutAgent() {
 		super();
 		this.powerOfPerception = Constants.PERCEPTION_FOR_SCOUT_AGENT;
