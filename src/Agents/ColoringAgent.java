@@ -30,6 +30,9 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	/* Destination objectif de l'agent */
 	private Int2D destination;
 	
+	/* Pouvoir de coloration */
+	private int powerOfColoration;
+	
 	/** Constructeur par d�faut **/
 	public ColoringAgent() {
 		super();
@@ -37,6 +40,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		this.hasAdestination = true;
 		this.destination = new Int2D(25,25);
 		this.powerOfPerception = Constants.PERCEPTION_FOR_COLORING_AGENT;
+		this.powerOfColoration = Constants.COLORATION_POWER_FOR_COLORING_AGENT;
 	}
 	
 	/**
@@ -62,7 +66,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	
 	/**
 	 * Permet de colorier une zone 
-	 * -> La zone est �gale � la zone de perception de l'agent
+	 * EDIT : La zone de coloration est differente de la zone de perception
 	 */
 	public void Color(){
 		/* Variables locales*/
@@ -71,9 +75,9 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		
 		/* R�cup�ration de la zone de coloriage -> Uniquement les cases qui ne sont pas de la couleur de l'agent*/
 		colorZoneFiltered = Statics.GetZoneColor(grid, new Int2D(
-									this.location.x - this.powerOfPerception,
-									this.location.y - this.powerOfPerception
-								), this.location.x + this.powerOfPerception, this.location.y + this.powerOfPerception
+									this.location.x - this.powerOfColoration,
+									this.location.y - this.powerOfColoration
+								), this.location.x + this.powerOfColoration, this.location.y + this.powerOfColoration
 							).stream().filter(cell -> cell.getColor() != this.colorAgent);
 		
 		/* R�cup�ration des cases avec la couleur de l'�quipe adverse */

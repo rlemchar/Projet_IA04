@@ -149,8 +149,8 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 		Integer upper_bound_y = limits.get(3);
 
 		ArrayList<Int2D> allCoordsFromPerception = new ArrayList<Int2D>();
-		for(int x = lower_bound_x; x <= upper_bound_x;x++){
-			for(int y =  lower_bound_y; y <= upper_bound_y;y++){
+		for(int x = lower_bound_x; x < upper_bound_x;x++){
+			for(int y =  lower_bound_y; y < upper_bound_y;y++){
 				allCoordsFromPerception.add(new Int2D(x,y));
 			}
 		}
@@ -159,11 +159,7 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 
 
 	/**
-<<<<<<< HEAD
-	 * Recherche une case o� un agent peut aller 
-=======
 	 * Recherche une case où un agent peut aller 
->>>>>>> d9d63e9a5da081c4c136e191c0d4d8b1d060a66a
 	 * @return -> Position idéale pour bouger
 	 */
 	public Int2D getNewLocation(){
@@ -248,5 +244,9 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 
 	public void setStop(Stoppable stop) {
 		this.stop = stop;
+	}
+	
+	public Int2D getLocation(){
+		return this.location;
 	}
 }
