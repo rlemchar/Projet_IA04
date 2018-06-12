@@ -35,7 +35,10 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 	public void step(SimState state) {
 		super.step(state);
 		moveRandom();
-
+		this.lastPerception = this.perceive();
+		ArrayList<Int2D> paintPotsLocations = new ArrayList<Int2D>();
+		paintPotsLocations = filterInformation(this.lastPerception);
+		//this.informOthers(paintPotsLocations);
 	}
 	
 	ArrayList<Int2D> filterInformation(ArrayList<Int2D> toFilter){
