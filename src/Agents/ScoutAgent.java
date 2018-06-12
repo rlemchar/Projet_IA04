@@ -1,6 +1,8 @@
 package Agents;
 
 import java.util.ArrayList;
+import java.util.Random;
+
 import util.Constants;
 import util.Statics;
 import util.TargetType;
@@ -8,10 +10,13 @@ import model.Color;
 import model.CommunicationSystem;
 import model.Order;
 import model.PaintPot;
+import model.CaseColor;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 import sim.util.Bag;
 import sim.util.Int2D;
+import util.Statics;
+import util.Constants;
 
 public class ScoutAgent extends AgentOnField implements Steppable {
 	
@@ -37,10 +42,101 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 	@Override
 	public void step(SimState state) {
 		super.step(state);
+		this.lastPerception = perceive();
 		moveRandom();
+		
+	}
+	
+	private Int2D moveRandom3() {
+		Int2D newLocation = null;
+
+		//Strat�gie 3 : mouvement al�atoire
+		Random generator = new Random();
+		int rand = generator.nextInt(4);
+		
+		switch(rand)
+		{
+			case 0:
+				newLocation =  new Int2D(this.location.x + 1, this.location.y);
+				break;
+			case 1:
+				newLocation =  new Int2D(this.location.x - 1, this.location.y);
+				break;
+			case 2:
+				newLocation =  new Int2D(this.location.x, this.location.y + 1);
+				break;
+			case 3:
+				newLocation =  new Int2D(this.location.x, this.location.y - 1);
+				break;
+		}
+		return newLocation;
+	}
+	
+	private Int2D moveRandom2() {
+		Int2D newLocation = null;
+
+		//Strat�gie 2 : Si on a un autre Scout Agent dans son champs de vision
+		for(Int2D cell : this.lastPerception) {
+			Bag objects = this.grid.getGrid().getObjectsAtLocation(cell.x, cell.y);
+			if (objects != null){
+				ScoutAgent secondScout = Statics.GetScoutAgent(objects);
+				if (secondScout != null && secondScout != this && secondScout.getColorAgent() == this.colorAgent){
+					// Il y'a un agent scout dans la case, on s'en �loigner
+					int distanceX = cell.x  - this.location.x; // Si > 0 aller � gauche
+					int distanceY = cell.y - this.location.y;  // Si > 0 aller en bas
+					
+					if(Math.abs(distanceX) > Math.abs(distanceY)){
+						if(distanceY > 0)
+							newLocation =  new Int2D(this.location.x, this.location.y - 1);
+						else
+							newLocation =  new Int2D(this.location.x, this.location.y + 1);
+					}
+					else{
+						if(distanceX > 0)
+							newLocation =  new Int2D(this.location.x - 1, this.location.y);
+						else
+							newLocation =  new Int2D(this.location.x + 1, this.location.y);
+					}
+				}
+			}
+		}
+		
+		return newLocation;
+	}
+	
+	private Int2D moveRandom1() {
+		Int2D newLocation = null;
+		
+		//Strat�gie 1 : Si on est du bord
+		if(this.location.x >= Constants.GRID_SIZE - Constants.PERCEPTION_FOR_SCOUT_AGENT)
+			newLocation =  new Int2D(this.location.x - 1, this.location.y);
+		if(this.location.x <= Constants.PERCEPTION_FOR_SCOUT_AGENT)
+			newLocation =  new Int2D(this.location.x + 1, this.location.y);
+		if(this.location.y >= Constants.GRID_SIZE - Constants.PERCEPTION_FOR_SCOUT_AGENT)
+			newLocation =  new Int2D(this.location.x, this.location.y - 1);
+		if(this.location.y <= Constants.PERCEPTION_FOR_SCOUT_AGENT)
+			newLocation =  new Int2D(this.location.x, this.location.y + 1);
+		
+		return newLocation;
+	}
+	
+	
+	
+	@Override
+	public void moveRandom(){		
+		
+		Int2D newLocation = this.moveRandom3();
+//		
+		if(this.moveRandom2() != null) newLocation = this.moveRandom2();
+//		
+		if(this.moveRandom1() != null) newLocation = this.moveRandom1();
+//		
+		this.grid.getGrid().setObjectLocation(this, newLocation);
+		
 		detectRelevantInformation();
 		informOthers();
 		resetDetections();
+		
 	}
 	
 	public void informOthers(){

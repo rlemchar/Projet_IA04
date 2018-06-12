@@ -84,13 +84,13 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 		switch(rand)
 		{
 			case 0:
-				if(this.location.x != 50) newLocation =  new Int2D(this.location.x + 1, this.location.y);
+				if(this.location.x != 49) newLocation =  new Int2D(this.location.x + 1, this.location.y);
 				break;
 			case 1:
 				if(this.location.x != 0) newLocation =  new Int2D(this.location.x - 1, this.location.y);
 				break;
 			case 2:
-				if(this.location.y != 50) newLocation =  new Int2D(this.location.x, this.location.y + 1);
+				if(this.location.y != 49) newLocation =  new Int2D(this.location.x, this.location.y + 1);
 				break;
 			case 3:
 				if(this.location.y != 0) newLocation =  new Int2D(this.location.x, this.location.y - 1);

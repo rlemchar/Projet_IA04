@@ -50,6 +50,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	public ColoringAgent(Color colorAgent) {
 		super(colorAgent);
 		this.numberOfTubeOfPaint = 0;
+
 		this.hasAdestination = false;
 		this.order = null;
 	}
