@@ -126,8 +126,13 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		
 		/* On vérifie si l'agent a bien une destination précise 
 		 * ou si l'agent n'est pas déja à la bonne destination */
-		if(!this.hasAdestination || (this.destination.x == this.location.x && this.destination.y == this.location.y))
+		if(this.destination.x == this.location.x && this.destination.y == this.location.y)
 			return;
+		
+		if(!this.hasAdestination){
+			if(this.isThereNewOrders())
+				this.compareAndChooseOrder(CommunicationSystem.consultOrders(this));
+		}
 		
 		/* On se d�place sur nos cases si possible -> cases faisant partie d'un chemin possible */
 		while(this.steps > 0) {
