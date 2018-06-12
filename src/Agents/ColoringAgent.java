@@ -35,7 +35,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		super();
 		this.numberOfTubeOfPaint = 0;
 		this.hasAdestination = true;
-		this.destination = new Int2D(25,25);
+		this.destination = new Int2D(10,25);
 		this.powerOfPerception = Constants.PERCEPTION_FOR_COLORING_AGENT;
 	}
 	
@@ -47,7 +47,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		super(colorAgent);
 		this.numberOfTubeOfPaint = 0;
 		this.hasAdestination = true;
-		this.destination = new Int2D(25,25);
+		this.destination = new Int2D(10,25);
 	}
 	
 	@Override

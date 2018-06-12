@@ -9,6 +9,8 @@ import sim.util.Bag;
 import sim.util.Int2D;
 import model.GridModel;
 
+import Agents.ScoutAgent;
+
 /**
 --------------------------------------------------------------------
 	Cette classe regroupe des méthodes statiques utiles pour le projet
@@ -28,6 +30,17 @@ public final class Statics {
 		}
 		return null;
 	}
+	
+	
+	public static ScoutAgent GetScoutAgent(Bag objects){
+		for(Object obj : objects) {
+			if(obj instanceof ScoutAgent)
+				return (ScoutAgent)obj;
+		}
+		return null;
+	}
+	
+	
 	
 	/**
 	 * Permet de renvoyer tous les couleurs des cases pour une zone donnée en param�tre
