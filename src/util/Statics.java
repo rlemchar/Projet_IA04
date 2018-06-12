@@ -8,6 +8,9 @@ import model.CaseColorListWrap;
 import sim.util.Bag;
 import sim.util.Int2D;
 import model.GridModel;
+import model.PaintPot;
+
+import Agents.ScoutAgent;
 
 /**
 --------------------------------------------------------------------
@@ -28,6 +31,17 @@ public final class Statics {
 		}
 		return null;
 	}
+	
+	
+	public static ScoutAgent GetScoutAgent(Bag objects){
+		for(Object obj : objects) {
+			if(obj instanceof ScoutAgent)
+				return (ScoutAgent)obj;
+		}
+		return null;
+	}
+	
+	
 	
 	/**
 	 * Permet de renvoyer tous les couleurs des cases pour une zone donnÃ©e en paramï¿½tre
@@ -89,8 +103,6 @@ public final class Statics {
 		CaseColorListWrap result = new CaseColorListWrap();
 		cellsToAnalyse.stream()
 			.forEach(cell -> {
-				System.out.println("coord X :" + cell.x );
-				System.out.println("coord Y :" + cell.y );
 				CaseColor colorOfCase = Statics.GetCaseColor(grid.getGrid().getObjectsAtLocation(cell.x, cell.y));
 				switch(colorOfCase.getColor()) {
 					case Blue:
@@ -137,5 +149,40 @@ public final class Statics {
 		}
 		
 		return allFound;
+	}
+	
+	
+	/**
+	 * Permet de récupérer le pot de peinture depuis un bag
+	 * @param objects -> Liste / Bag d'objets où chercher le pot de peinture
+	 * @return le pot de peinture sinon null
+	 */
+	public static PaintPot getPaintPot(Bag objects){
+		for(Object obj : objects) {
+			if(obj instanceof PaintPot)
+				return (PaintPot)obj;
+		}
+		return null;
+	}
+	
+	/**
+	 * Permet de récupérer le pot de peinture à une position x,y
+	 * @param grid -> Grille de simulation
+	 * @param x -> abscisse
+	 * @param y -> ordonnée
+	 * @return le pot de peinture sinon null
+	 */
+	public static PaintPot getPaintPot(GridModel grid,int x, int y){
+		return Statics.getPaintPot(grid.getGrid().getObjectsAtLocation(x, y));
+	}
+	
+	/**
+	 * Permet de récupérer le pot de peinture à une position x,y
+	 * @param grid -> Grille de simulation
+	 * @param pos -> Int2D représentant la position de recherche
+	 * @return le pot de peinture sinon null
+	 */
+	public static PaintPot getPaintPot(GridModel grid,Int2D pos){
+		return Statics.getPaintPot(grid.getGrid().getObjectsAtLocation(pos.x, pos.y));
 	}
 }
