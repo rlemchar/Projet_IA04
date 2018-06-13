@@ -94,6 +94,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 						break;
 				}
 			}
+			this.hasAdestination = false;
 		}
 	}
 	
