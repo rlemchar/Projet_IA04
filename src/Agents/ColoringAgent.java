@@ -66,7 +66,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 				this.chooseBetweenDestinationAndNewOrders(CommunicationSystem.consultOrders(this));
 			}
 			else{
-				/* On récupère le nouvel ordre */
+				/* On rï¿½cupï¿½re le nouvel ordre */
 				this.order = this.compareAndChooseOrder(CommunicationSystem.consultOrders(this));
 				this.hasAdestination = true;
 			}
@@ -79,15 +79,15 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 				this.TotalMove();
 		}
 		
-		/* Cas où on est arrivé à destination */
+		/* Cas oï¿½ on est arrivï¿½ ï¿½ destination */
 		if(this.hasAdestination){
 			if(this.location == this.order.getPosition()){
 				switch(this.order.getTargetType()){
 					case land:
-						/* L'agent cherche une case à proximité à colorier */
+						/* L'agent cherche une case ï¿½ proximitï¿½ ï¿½ colorier */
 						break;
 					case paintPot:
-						/* Il récupère un tube de peinture */
+						/* Il rï¿½cupï¿½re un tube de peinture */
 						this.rechargePaint(Statics.getPaintPot(this.grid,this.location));
 						break;
 					default:
@@ -167,7 +167,11 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 			return;
 		
 		/* On se dï¿½place sur nos cases si possible -> cases faisant partie d'un chemin possible */
+		int test = 0;
+		System.out.println(this.location);
 		while(this.steps > 0) {
+			test++;
+			
 			/* Init des offset  */
 			if(this.order.getPosition().x < this.location.x) {
 				offsets[0] = new Int2D(-1,0);
@@ -201,6 +205,8 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 					break;
 			}
 		}
+		System.out.println("Nombre de dÃ©placements : "+test);
+		System.out.println(this.location);
 	}
 		
 	public void compareDestinations(){
@@ -252,7 +258,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 					this.setNewPosition(this.location.x + offsets[0].x,this.location.y);
 				else if(dist.x < dist.y)
 					this.setNewPosition(this.location.x,this.location.y + offsets[1].y);
-				else { // On se déplace aléatoirement
+				else { // On se dï¿½place alï¿½atoirement
 					if(this.grid.random.nextBoolean())
 						this.setNewPosition(this.location.x + offsets[0].x,this.location.y);
 					else
@@ -343,18 +349,18 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	 * @param orders -> Les nouveaux ordres
 	 */
 	private void chooseBetweenDestinationAndNewOrders(ArrayList<Order> orders){
-		/* Si l'ordre est de type "pot de peinture" et que l'agent est déja chargé, on ignore l'ordre */
+		/* Si l'ordre est de type "pot de peinture" et que l'agent est dï¿½ja chargï¿½, on ignore l'ordre */
 		
 		
 		
-		/* Récupération de la destination la plus proche parmi les ordres */
+		/* Rï¿½cupï¿½ration de la destination la plus proche parmi les ordres */
 		Order bestOrder = this.compareAndChooseOrder(orders);
 		
-		/* Récupération des distances par rapport à l'agent */
+		/* Rï¿½cupï¿½ration des distances par rapport ï¿½ l'agent */
 		int dist_order = this.calculateDistanceScore(bestOrder.getPosition());
 		int dist_destination = this.calculateDistanceScore(this.order.getPosition());
 		
-		/* Mis à jour si le nouvel ordre est meilleur */
+		/* Mis ï¿½ jour si le nouvel ordre est meilleur */
 		if(dist_order < dist_destination)
 			this.order.setPosition(bestOrder.getPosition());
 	}

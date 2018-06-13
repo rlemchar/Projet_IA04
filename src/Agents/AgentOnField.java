@@ -76,7 +76,7 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 		this.steps = Constants.MAX_STEPS;
 	}
 	
-	public void TotalMove() {       //cette fonction permet de gérer les points d'énergie/ le coût des déplacements
+	public void TotalMove() {       //cette fonction permet de gï¿½rer les points d'ï¿½nergie/ le coï¿½t des dï¿½placements
 		CaseColor currentColor = Statics.GetCaseColor(this.grid.getGrid().getObjectsAtLocation(this.location.x, this.location.y));
 		int costOfMove = Statics.computeCost(currentColor.getColor(), this.getColorAgent());
 
@@ -239,10 +239,15 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 	 */
 	public void setNewPosition(int x,int y) {
 		this.grid.getGrid().setObjectLocation(this, x, y);
+		this.setLocation(x, y);
 	}
 	
 	public void setLocation(Int2D location) {
 		this.location = location;
+	}
+	
+	public void setLocation(int x,int y) {
+		this.location = new Int2D(x,y);
 	}
 	
 	/* Getteurs */
