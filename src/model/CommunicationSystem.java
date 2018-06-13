@@ -8,7 +8,7 @@ import Agents.ColoringAgent;
 // Les agents eclaireurs ajoutent des ordres et les agents colorieurs les recupèrent depuis cette classe
 public class CommunicationSystem {
 	
-	static ArrayList<Order> Orders;
+	private static ArrayList<Order> Orders = new ArrayList<Order>();
 	
 	public static ArrayList<Order> consultOrders(ColoringAgent receivingAgent){
 		
