@@ -250,10 +250,15 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 	 */
 	public void setNewPosition(int x,int y) {
 		this.grid.getGrid().setObjectLocation(this, x, y);
+		this.setLocation(x, y);
 	}
 	
 	public void setLocation(Int2D location) {
 		this.location = location;
+	}
+	
+	public void setLocation(int x,int y) {
+		this.location = new Int2D(x,y);
 	}
 	
 	/* Getteurs */

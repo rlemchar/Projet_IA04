@@ -15,6 +15,7 @@ import sim.portrayal.Inspector;
 import sim.portrayal.grid.SparseGridPortrayal2D;
 import sim.portrayal.simple.RectanglePortrayal2D;
 import util.Constants;
+import util.Statics;
 
 public class GridGUI extends GUIState {
 	public Display2D display;
@@ -102,6 +103,50 @@ public class GridGUI extends GUIState {
 		c.registerFrame(displayFrame);
 		displayFrame.setVisible(true);
 		display.attach(yardPortrayal, "Yard");
+	}
+	
+	@Override
+	/**
+	 * Cette fonction est appelé à la fin de la simulation
+	 * -> On décompte le nombre de cases couleurs et on affiche le gagnant
+	 */
+	public void finish() {
+		super.finish();
+		
+		/* Variables locales */
+		int red,blue,x,y;
+		GridModel grid;
+		
+		/* Init */
+		red = 0;
+		blue = 0;
+		grid = (GridModel)state;
+		
+		/* Décompte */
+		for(x = 0;x < grid.getGrid().getHeight();x++) {
+			for(y = 0;y < grid.getGrid().getWidth();y++) {
+				switch(Statics.GetColorOfCase(grid, x, y)) {
+					case Blue:
+						blue++;
+						break;
+					case Red:
+						red++;
+						break;
+					default:
+						break;
+				}
+			}
+		}
+		
+		/* Affichage du gagnant -> pour le moment sur la console */
+		if(blue == red) {
+			System.out.println("Match nul. Nombre de cases coloriés de part et d'autre = "+red);
+		}
+		else {
+			System.out.println(String.format(
+					"L'équipe {0} a gagné avec {1} cases coloriés \n Les perdants ont réussi à colorier {2} cases"
+					, (blue > red) ? "bleue" : "rouge",(blue > red) ? blue : red,(blue > red) ? red : blue));
+		}
 	}
 	
 	public  Object  getSimulationInspectedObject()  {  return  state;  }

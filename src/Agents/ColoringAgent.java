@@ -94,6 +94,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 						break;
 				}
 			}
+			this.hasAdestination = false;
 		}
 	}
 	
@@ -169,7 +170,11 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 			return;
 		
 		/* On se d�place sur nos cases si possible -> cases faisant partie d'un chemin possible */
+		int test = 0;
+		System.out.println(this.location);
 		while(this.steps > 0) {
+			test++;
+			
 			/* Init des offset  */
 			if(this.order.getPosition().x < this.location.x) {
 				offsets[0] = new Int2D(-1,0);
@@ -203,6 +208,8 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 					break;
 			}
 		}
+		System.out.println("Nombre de déplacements : "+test);
+		System.out.println(this.location);
 	}
 		
 	public void compareDestinations(){
@@ -219,21 +226,18 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		/* Variable locale */
 		boolean isSameColor;
 		int numberOfSteps;
+		Color currentColorCase;
 		
 		/* Sécurité d'utilisation */
 		if(offsets.length != 2) {
 			return false;
 		}
 		
-		/* Init number of steps */
-		if(desiredColor == this.colorAgent)
-			numberOfSteps = 1;
-		else
-			numberOfSteps = (desiredColor == Color.None) ? 2 : 3;
-		
-		/* On quitte si on ne peut pas se déplacer */
-		if(this.steps < numberOfSteps)
-			return false;
+		/* Init currentColorCase */
+		currentColorCase = Statics.GetColorOfCase(this.grid, this.location);
+
+		/* Récupèration de coût de déplacement */
+		numberOfSteps = Statics.computeCost(currentColorCase, this.colorAgent);
 		
 		/* On regarde si les cases sont de même couleur */
 		isSameColor = true;
@@ -248,7 +252,11 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		
 		/* Si cases de la même couleur */
 		if(isSameColor) {
-			if(Statics.GetColorOfCase(this.grid,this.location) == desiredColor) {
+			if(currentColorCase == desiredColor) {
+				/* On quitte si on ne peut pas se déplacer */
+				if(this.steps < numberOfSteps)
+					return false;
+				
 				// On se déplace le long de la coordonnée où il y a le plus de distance à parcourir
 				if(dist.x > dist.y)
 					this.setNewPosition(this.location.x + offsets[0].x,this.location.y);
@@ -272,9 +280,12 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		else {
 			for(int i = 0;i < offsets.length;i++) {
 				if(Statics.GetColorOfCase(this.grid, this.location.x + offsets[i].x,this.location.y + offsets[i].y) == desiredColor) {
-					this.setNewPosition(this.location.x + offsets[i].x, this.location.x + offsets[i].y);
-					this.steps -= numberOfSteps;
-					return true;
+					/* On se déplace uniquement si le coût de déplacement est inférieur au nombre de pas restant */
+					if(this.steps >= numberOfSteps) {
+						this.setNewPosition(this.location.x + offsets[i].x, this.location.x + offsets[i].y);
+						this.steps -= numberOfSteps;
+						return true;
+					}
 				}
 			}
 			return false;
