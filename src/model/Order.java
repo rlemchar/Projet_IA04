@@ -3,6 +3,7 @@ package model;
 import Agents.ColoringAgent;
 import Agents.ScoutAgent;
 import sim.util.Int2D;
+import util.TargetType;
 
 // Classe qui symbolise un ordre donné par un agent éclaireur à un agent colorieur
 public class Order {
@@ -10,11 +11,13 @@ public class Order {
 	ScoutAgent orderingAgent;
 	ColoringAgent intendedAgent;
 	Int2D position;
+	TargetType targetType;
 	
-	public Order(ScoutAgent orderingAgent,ColoringAgent intendedAgent,Int2D position){
+	public Order(ScoutAgent orderingAgent,ColoringAgent intendedAgent,Int2D position, TargetType targetType){
 		this.orderingAgent = orderingAgent;
 		this.intendedAgent = intendedAgent;
 		this.position = position;
+		this.targetType = targetType;
 		
 	}
 	

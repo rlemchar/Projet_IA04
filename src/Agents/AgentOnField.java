@@ -69,6 +69,7 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 	/* Step */
 	@Override
 	public void step(SimState state) {
+		
 		this.grid = (GridModel) state;
 		this.location = this.grid.getGrid().getObjectLocation(this);
 		this.steps = Constants.MAX_STEPS;
@@ -146,8 +147,8 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 		Integer upper_bound_y = limits.get(3);
 
 		ArrayList<Int2D> allCoordsFromPerception = new ArrayList<Int2D>();
-		for(int x = lower_bound_x; x <= upper_bound_x;x++){
-			for(int y =  lower_bound_y; y <= upper_bound_y;y++){
+		for(int x = lower_bound_x; x < upper_bound_x;x++){
+			for(int y =  lower_bound_y; y < upper_bound_y;y++){
 				allCoordsFromPerception.add(new Int2D(x,y));
 			}
 		}
@@ -241,5 +242,9 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 
 	public void setStop(Stoppable stop) {
 		this.stop = stop;
+	}
+	
+	public Int2D getLocation(){
+		return this.location;
 	}
 }
