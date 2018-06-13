@@ -15,8 +15,7 @@ import sim.engine.SimState;
 import sim.engine.Steppable;
 import sim.util.Bag;
 import sim.util.Int2D;
-import util.Statics;
-import util.Constants;
+
 
 public class ScoutAgent extends AgentOnField implements Steppable {
 	
@@ -42,50 +41,35 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 	@Override
 	public void step(SimState state) {
 		super.step(state);
-		moveRandom();
 		this.detectRelevantInformation();
 		this.informOthers();
-		this.resetDetections();
-
-		
-		
+		this.resetDetections();	
+		moveWithoutObjective();
 	}
-	
-	private Int2D moveRandom3() {
-		Int2D newLocation = null;
 
-		//Stratï¿½gie 3 : mouvement alï¿½atoire
-		Random generator = new Random();
-		int rand = generator.nextInt(4);
+	
+	public void moveWithoutObjective(){		
+		// Mouvement aléatoire
+		Int2D newLocation = this.moveRandom();
+		//	S'écarte des autres Scouts Agents de la même couleur
+		if(this.avoidScoutAgent() != null) newLocation = this.avoidScoutAgent();
+		//	S'écarte des bords pour couvrir le maximum de surface
+		if(this.avoidEdge() != null) newLocation = this.avoidEdge();
+
 		
-		switch(rand)
-		{
-			case 0:
-				newLocation =  new Int2D(this.location.x + 1, this.location.y);
-				break;
-			case 1:
-				newLocation =  new Int2D(this.location.x - 1, this.location.y);
-				break;
-			case 2:
-				newLocation =  new Int2D(this.location.x, this.location.y + 1);
-				break;
-			case 3:
-				newLocation =  new Int2D(this.location.x, this.location.y - 1);
-				break;
-		}
-		return newLocation;
+		this.grid.getGrid().setObjectLocation(this, newLocation);
 	}
-	
-	private Int2D moveRandom2() {
-		Int2D newLocation = null;
 
-		//Stratï¿½gie 2 : Si on a un autre Scout Agent dans son champs de vision
+	private Int2D avoidScoutAgent() {
+		Int2D newLocation = null;
+		
+		
 		for(Int2D cell : this.lastPerception) {
 			Bag objects = this.grid.getGrid().getObjectsAtLocation(cell.x, cell.y);
 			if (objects != null){
 				ScoutAgent secondScout = Statics.GetScoutAgent(objects);
 				if (secondScout != null && secondScout != this && secondScout.getColorAgent() == this.colorAgent){
-					// Il y'a un agent scout dans la case, on s'en ï¿½loigner
+					// Il y'a un agent scout dans la case, on s'en eloigner
 					int distanceX = cell.x  - this.location.x; // Si > 0 aller ï¿½ gauche
 					int distanceY = cell.y - this.location.y;  // Si > 0 aller en bas
 					
@@ -108,47 +92,14 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 		return newLocation;
 	}
 	
-	private Int2D moveRandom1() {
-		Int2D newLocation = null;
-		
-		//Stratï¿½gie 1 : Si on est du bord
-		if(this.location.x >= Constants.GRID_SIZE - Constants.PERCEPTION_FOR_SCOUT_AGENT)
-			newLocation =  new Int2D(this.location.x - 1, this.location.y);
-		if(this.location.x <= Constants.PERCEPTION_FOR_SCOUT_AGENT)
-			newLocation =  new Int2D(this.location.x + 1, this.location.y);
-		if(this.location.y >= Constants.GRID_SIZE - Constants.PERCEPTION_FOR_SCOUT_AGENT)
-			newLocation =  new Int2D(this.location.x, this.location.y - 1);
-		if(this.location.y <= Constants.PERCEPTION_FOR_SCOUT_AGENT)
-			newLocation =  new Int2D(this.location.x, this.location.y + 1);
-		
-		return newLocation;
-	}
-	
-	
-	
-	@Override
-	public void moveRandom(){		
-		
-		Int2D newLocation = this.moveRandom3();
-//		
-		if(this.moveRandom2() != null) newLocation = this.moveRandom2();
-//		
-		if(this.moveRandom1() != null) newLocation = this.moveRandom1();
-//		
-		this.grid.getGrid().setObjectLocation(this, newLocation);
-		
-		detectRelevantInformation();
-		informOthers();
-		resetDetections();
-		
-	}
-	
 	public void informOthers(){
 		
 		if (!lastAgentsDetected.isEmpty()){
 			
 			Int2D mostPertinentPaintPot;
 			Int2D mostPertinentLand;
+			
+			System.out.println(this.lastAgentsDetected);
 			
 			for (ColoringAgent coloringAgent : this.lastAgentsDetected){
 				mostPertinentPaintPot = getMostPertinentPaintPotLocation(coloringAgent);
@@ -243,6 +194,7 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 		}else{
 			Int2D closer = this.lastPaintPotDetected.get(0);
 			for (int i =1; i<this.lastPaintPotDetected.size();i++){
+				System.out.println(coloringAgent.getLocation());
 				if (calculateDistanceScore(coloringAgent.getLocation(),closer) > 
 				calculateDistanceScore(coloringAgent.getLocation(),this.lastPaintPotDetected.get(i))){
 					closer = this.lastPaintPotDetected.get(i);

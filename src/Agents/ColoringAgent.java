@@ -76,7 +76,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 			if(this.hasAdestination)
 				this.moveTowardsDestination();
 			else
-				this.moveRandom();
+				this.moveWithoutObjective();
 		}
 		
 		/* Cas où on est arrivé à destination */
@@ -95,6 +95,16 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 				}
 			}
 		}
+	}
+	
+	
+	
+	
+	public void moveWithoutObjective(){		
+		// Mouvement aléatoire
+		Int2D newLocation = this.moveRandom();
+
+		this.grid.getGrid().setObjectLocation(this, newLocation);
 	}
 	
 	/**
