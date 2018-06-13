@@ -20,15 +20,25 @@ public class Order {
 	/* Type de l'ordre */
 	private TargetType targetType;
 	
-	/* Score permettant de donner un niveau à la zone à colorier */
+	/* Score permettant de donner un niveau ï¿½ la zone ï¿½ colorier */
 	private int scoreForLandType;
 	
-	public Order(ScoutAgent orderingAgent,ColoringAgent intendedAgent,Int2D position, TargetType targetType){
+	public Order(ScoutAgent orderingAgent,ColoringAgent intendedAgent,Int2D position){
+		// constructeur pour les ordres concernant les tubes de peintures ( 3 arguments)
 		this.orderingAgent = orderingAgent;
 		this.intendedAgent = intendedAgent;
 		this.position = position;
-		this.targetType = targetType;
+		this.targetType = targetType.paintPot;
 		
+	}
+	
+	public Order(ScoutAgent orderingAgent,ColoringAgent intendedAgent,Int2D position, int scoreOfLand){
+		// constructeur pour les ordres concernant les cases Ã  colorier ( 4 arguments)
+		this.orderingAgent = orderingAgent;
+		this.intendedAgent = intendedAgent;
+		this.position = position;
+		this.targetType = targetType.land;
+		this.scoreForLandType = scoreOfLand;
 	}
 	
 	public ScoutAgent getOrderingAgent() {
@@ -40,7 +50,7 @@ public class Order {
 	}
 
 	/**
-	 * Retourne la position souhaité pour l'ordre
+	 * Retourne la position souhaitï¿½ pour l'ordre
 	 * @return
 	 */
 	public Int2D getPosition() {
@@ -60,7 +70,7 @@ public class Order {
 	}
 	
 	/**
-	 * Retourne le score indiquant le niveau de la zone à colorier
+	 * Retourne le score indiquant le niveau de la zone ï¿½ colorier
 	 * @return
 	 */
 	public int getScoreForLandType(){
@@ -75,6 +85,8 @@ public class Order {
 		result += String.format("Destination : {0},{1}",this.position.x,this.position.y);
 		return result;
 	}
+	
+	
 	
 
 }

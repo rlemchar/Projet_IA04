@@ -19,11 +19,29 @@ public class CommunicationSystem {
 				allOrders.add(order);
 			}
 		}
+		// On supprime les ordres après les avoir lu
+		clearOrdersForAgent(receivingAgent);
 		return allOrders;
 	}
 	
 	public static void addOrder(Order order){
 		Orders.add(order);
+	}
+	
+public static void clearOrdersForAgent(ColoringAgent Agent){
+		
+		ArrayList<Order> ordersToDelete = new ArrayList<Order>();
+		
+		for (Order order : Orders){
+			if (order.getIntendedAgent() == Agent){
+				ordersToDelete.add(order);
+			}
+		}
+		
+		for (Order order : ordersToDelete){
+			Orders.remove(order);
+		}
+		
 	}
 
 }

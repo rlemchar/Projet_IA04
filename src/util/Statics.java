@@ -41,6 +41,14 @@ public final class Statics {
 		return null;
 	}
 	
+	public static PaintPot GetPaintPot(Bag objects){
+		for(Object obj : objects) {
+			if(obj instanceof PaintPot)
+				return (PaintPot)obj;
+		}
+		return null;
+	}
+	
 	
 	
 	/**
@@ -153,8 +161,8 @@ public final class Statics {
 	
 	
 	/**
-	 * Permet de récupérer le pot de peinture depuis un bag
-	 * @param objects -> Liste / Bag d'objets où chercher le pot de peinture
+	 * Permet de rï¿½cupï¿½rer le pot de peinture depuis un bag
+	 * @param objects -> Liste / Bag d'objets oï¿½ chercher le pot de peinture
 	 * @return le pot de peinture sinon null
 	 */
 	public static PaintPot getPaintPot(Bag objects){
@@ -166,10 +174,10 @@ public final class Statics {
 	}
 	
 	/**
-	 * Permet de récupérer le pot de peinture à une position x,y
+	 * Permet de rï¿½cupï¿½rer le pot de peinture ï¿½ une position x,y
 	 * @param grid -> Grille de simulation
 	 * @param x -> abscisse
-	 * @param y -> ordonnée
+	 * @param y -> ordonnï¿½e
 	 * @return le pot de peinture sinon null
 	 */
 	public static PaintPot getPaintPot(GridModel grid,int x, int y){
@@ -177,9 +185,9 @@ public final class Statics {
 	}
 	
 	/**
-	 * Permet de récupérer le pot de peinture à une position x,y
+	 * Permet de rï¿½cupï¿½rer le pot de peinture ï¿½ une position x,y
 	 * @param grid -> Grille de simulation
-	 * @param pos -> Int2D représentant la position de recherche
+	 * @param pos -> Int2D reprï¿½sentant la position de recherche
 	 * @return le pot de peinture sinon null
 	 */
 	public static PaintPot getPaintPot(GridModel grid,Int2D pos){
