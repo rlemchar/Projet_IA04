@@ -193,4 +193,18 @@ public final class Statics {
 	public static PaintPot getPaintPot(GridModel grid,Int2D pos){
 		return Statics.getPaintPot(grid.getGrid().getObjectsAtLocation(pos.x, pos.y));
 	}
+	
+	public static int computeScoreCell(GridModel grid, Int2D cell, Color colorAgent) {
+		int score = 0;
+		Bag BagToEvaluate = null;
+		for(int i = -1; i != 1; i++) {
+			for(int j = -1; j != 1; j++) {
+				BagToEvaluate = grid.getGrid().getObjectsAtLocation(cell.x + i, cell.y + j);
+				Color colorCase = GetCaseColor(BagToEvaluate).getColor();
+				if(colorCase == colorAgent) score = score + 0;
+				else score = score + 1;
+			}			
+		}
+		return score;
+	}
 }

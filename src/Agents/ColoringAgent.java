@@ -76,7 +76,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 			if(this.hasAdestination)
 				this.moveTowardsDestination();
 			else
-				this.moveWithoutObjective();
+				this.TotalMove();
 		}
 		
 		/* Cas o� on est arriv� � destination */
@@ -98,15 +98,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	}
 	
 	
-	
-	
-	public void moveWithoutObjective(){		
-		// Mouvement al�atoire
-		Int2D newLocation = this.moveRandom();
 
-		this.grid.getGrid().setObjectLocation(this, newLocation);
-	}
-	
 	/**
 	 * Permet de colorier une zone 
 	 * EDIT : La zone de coloration est differente de la zone de perception

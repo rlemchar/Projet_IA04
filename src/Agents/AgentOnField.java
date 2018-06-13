@@ -82,6 +82,8 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 		while (this.steps >= costOfMove) {
 			moveWithoutObjective();
 			this.steps = this.steps - costOfMove;
+			System.out.println(this);
+			System.out.println(this.location);
 			currentColor = Statics.GetCaseColor(this.grid.getGrid().getObjectsAtLocation(this.location.x, this.location.y));
 			costOfMove = Statics.computeCost(currentColor.getColor(), this.getColorAgent());
 		}
@@ -91,14 +93,13 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 	
 	public void moveWithoutObjective(){		
 		// Mouvement al�atoire
-		Int2D newLocation = this.moveRandom();
+		this.location = this.moveRandom();
 
-		this.grid.getGrid().setObjectLocation(this, newLocation);
 	}
 	
 	protected Int2D moveRandom() {
 		
-		Int2D newLocation = null;
+		Int2D newLocation = this.location;
 		Random generator = new Random();
 		int rand = generator.nextInt(4);
 		
@@ -106,36 +107,25 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 		{
 			case 0:
 				if(this.location.x < 49) newLocation =  new Int2D(this.location.x + 1, this.location.y);
+				else newLocation =  new Int2D(this.location.x - 1, this.location.y);
 				break;
 			case 1:
 				if(this.location.x > 0) newLocation =  new Int2D(this.location.x - 1, this.location.y);
+				else newLocation =  new Int2D(this.location.x + 1, this.location.y);
 				break;
 			case 2:
 				if(this.location.y < 49) newLocation =  new Int2D(this.location.x, this.location.y + 1);
+				else newLocation =  new Int2D(this.location.x, this.location.y - 1);
 				break;
 			case 3:
 				if(this.location.y > 0) newLocation =  new Int2D(this.location.x, this.location.y - 1);
+				else newLocation =  new Int2D(this.location.x, this.location.y + 1);
 				break;
 		}
 		return newLocation;
 	}
 	
-	
-	protected Int2D avoidEdge() {
-		Int2D newLocation = null;
-		if(this.location.x >= Constants.GRID_SIZE - Constants.PERCEPTION_FOR_SCOUT_AGENT)
-			newLocation =  new Int2D(this.location.x - 1, this.location.y);
-		if(this.location.x <= Constants.PERCEPTION_FOR_SCOUT_AGENT)
-			newLocation =  new Int2D(this.location.x + 1, this.location.y);
-		if(this.location.y >= Constants.GRID_SIZE - Constants.PERCEPTION_FOR_SCOUT_AGENT)
-			newLocation =  new Int2D(this.location.x, this.location.y - 1);
-		if(this.location.y <= Constants.PERCEPTION_FOR_SCOUT_AGENT)
-			newLocation =  new Int2D(this.location.x, this.location.y + 1);
-		
-		return newLocation;
-	}
-	
-	
+
 	
 	/* Permet à un agent de percevoir */
 	public ArrayList<Integer> determineLimits(){      // determine les limites de la perception en prenant en compte la taille de la grille

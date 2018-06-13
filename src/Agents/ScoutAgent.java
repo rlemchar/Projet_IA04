@@ -39,28 +39,41 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 	@Override
 	public void step(SimState state) {
 		super.step(state);
+		this.lastPerception = perceive();
+		this.TotalMove();
 		this.detectRelevantInformation();
 		this.informOthers();
 		this.resetDetections();
-		this.TotalMove();
 	}
 
 	@Override
-	public void moveWithoutObjective(){		
-		// Mouvement al�atoire
-		Int2D newLocation = this.moveRandom();
-		//	S'�carte des autres Scouts Agents de la m�me couleur
-		if(this.avoidScoutAgent() != null) newLocation = this.avoidScoutAgent();
-		//	S'�carte des bords pour couvrir le maximum de surface
-		if(this.avoidEdge() != null) newLocation = this.avoidEdge();
+	public void moveWithoutObjective(){	
+		// Mouvement aleatoire
+		this.location = this.moveRandom();
+		//	S'�carte des autres Scouts Agents de la meme couleur
+		if(this.avoidScoutAgent() != null) this.location = this.avoidScoutAgent();
+		//	S'ecarte des bords pour couvrir le maximum de surface
+		if(this.avoidEdge() != null) this.location = this.avoidEdge();
 
-		
-		this.grid.getGrid().setObjectLocation(this, newLocation);
 	}
+	
+	protected Int2D avoidEdge() {
+		Int2D newLocation = null;
+		if(this.location.x >= Constants.GRID_SIZE - Constants.PERCEPTION_FOR_SCOUT_AGENT)
+			newLocation =  new Int2D(this.location.x - 1, this.location.y);
+		if(this.location.x <= Constants.PERCEPTION_FOR_SCOUT_AGENT)
+			newLocation =  new Int2D(this.location.x + 1, this.location.y);
+		if(this.location.y >= Constants.GRID_SIZE - Constants.PERCEPTION_FOR_SCOUT_AGENT)
+			newLocation =  new Int2D(this.location.x, this.location.y - 1);
+		if(this.location.y <= Constants.PERCEPTION_FOR_SCOUT_AGENT)
+			newLocation =  new Int2D(this.location.x, this.location.y + 1);
+		
+		return newLocation;
+	}
+	
 
 	private Int2D avoidScoutAgent() {
 		Int2D newLocation = null;
-		
 		
 		for(Int2D cell : this.lastPerception) {
 			Bag objects = this.grid.getGrid().getObjectsAtLocation(cell.x, cell.y);
@@ -96,9 +109,7 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 			
 			Int2D mostPertinentPaintPot;
 			Int2D mostPertinentLand;
-			
-			System.out.println(this.lastAgentsDetected);
-			
+						
 			for (ColoringAgent coloringAgent : this.lastAgentsDetected){
 				mostPertinentPaintPot = getMostPertinentPaintPotLocation(coloringAgent);
 				mostPertinentLand = getMostPertinentLandLocation(coloringAgent);
@@ -165,7 +176,6 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 	
 	int calculateDistanceScore(Int2D agentLocalisation, Int2D targetLocalisation){
 		
-		System.out.println("ma localisation : " + agentLocalisation.x + "   " + agentLocalisation.y);
 		int xdistance = Math.abs(agentLocalisation.x - targetLocalisation.x);
 		int ydistance = Math.abs(agentLocalisation.y - targetLocalisation.y);
 		
@@ -193,7 +203,6 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 		}else{
 			Int2D closer = this.lastPaintPotDetected.get(0);
 			for (int i =1; i<this.lastPaintPotDetected.size();i++){
-				System.out.println(coloringAgent.getLocation());
 				if (calculateDistanceScore(coloringAgent.getLocation(),closer) > 
 				calculateDistanceScore(coloringAgent.getLocation(),this.lastPaintPotDetected.get(i))){
 					closer = this.lastPaintPotDetected.get(i);
