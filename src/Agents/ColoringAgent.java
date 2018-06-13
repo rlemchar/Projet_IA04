@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 import model.CaseColor;
 import model.Color;
 import model.CommunicationSystem;
+import model.GridModel;
 import model.Order;
 import model.PaintPot;
 
@@ -66,29 +67,25 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	public void step(SimState state) {
 		super.step(state);
 		
-		//NOUVEAU COMPORTEMENT COMPLET A DECOMMENTER LORSQUE TOUTES
-		// LES FONCTIONS INTERMEDIAIRES SERONT FAITES
-		/*
-		
 		if (this.location != this.getDestination()){
 			// L'agent n'est pas encore arrivé à destination
 			if (this.target == TargetType.paintPot){
 				// L'agent cherche des pots de peinture
-				PaintPot foundPaintPot = getPaintPot();
+				PaintPot foundPaintPot = Statics.GetPaintPot(this.grid, this.location);
 				if(foundPaintPot != null){
 					this.rechargePaint(foundPaintPot);
 					this.resetTarget();
 				}else{
 				// La case ne contient pas de peinture	
-					if(!CommunicationSystem.consultOrders(this).isEmpty()){
+					Order newOrder = this.lookForBestNewOrder();
+					if(newOrder != null){
 						// L'agent a reçu de nouveaux ordres
 						if (this.order !=null){
 							//L'agent a deja une destination
-							// compareDestinationForTarget(paint);
+							this.compareAndExchangeCurrentOrderWithNewOne(newOrder);
 						}else{
 							//L'agent n'a pas de destination
-							// ChoisirMeilleurOrdreEnFonctionTarget(paint);
-							
+							this.order = newOrder;
 						}
 						this.moveTowardsDestination();
 					}else{
@@ -101,24 +98,27 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 							this.moveRandom();
 						}
 						
+						}
 					}
-				}
-			}else{
+				}else{
 				// L'agent cherche une case à colorier une case
-				//compareScoreCaseActuelleàscoredestination();
-				if (scoreCase > scoreDestination){
+				int currentDestinationScore = Statics.computeScoreCell(this.grid, this.order.getPosition(),this.colorAgent);
+				int currentPositionScore = Statics.computeScoreCell(this.grid,this.location,this.colorAgent);
+				if (currentPositionScore > currentDestinationScore){
 					// La case sur laquelle il est est plus interessante à colorier que la destination
 					this.Color();
 					this.resetTarget();
 				}else{
-					if (!CommunicationSystem.consultOrders(this).isEmpty()){
+					// La case sur laquelle l'agent est n'est pas intéressante
+					Order newOrder = this.lookForBestNewOrder();
+					if (newOrder != null){
 						// L'agent a reçu de nouveaux ordres
 						if (this.getDestination() != null){
 							// L'agent a deja une destination
-							// comparedestinationavecNouveauxordresenfonctiontarget(land);
+							this.compareAndExchangeCurrentOrderWithNewOne(newOrder);
 						}else{
 							// L'agent n'a pas de destination
-							//ChoisirMeilleurOrdreParRapportàTarget(land);
+							this.order = newOrder;
 						}
 						this.moveTowardsDestination();
 					}else{
@@ -132,13 +132,16 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 						}
 					}
 				}
-				
-			}else{
+			}	
+		}else{
 				// L'agent est arrivé à destination
 				if (this.target == TargetType.paintPot){
 					//Si l'agent cherche de la peinture
-					if (potDePeinturePrésent){
+					PaintPot foundPaintPot = Statics.GetPaintPot(this.grid, this.location);
+					if (foundPaintPot != null){
 						// on recupere le pot de peinture
+						this.rechargePaint(foundPaintPot);
+						this.resetTarget();
 					}
 				}else{
 					// Si l'agent cherche à colorier
@@ -146,26 +149,29 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 					this.resetTarget();
 				}
 				
-				if (CommunicationSystem.consultOrders(this) != null){
+				Order newOrder = this.lookForBestNewOrder();
+				if (newOrder != null){
 					// L'agent a reçu des ordres
-					// OnselectionneOrdreEnRapportActarget
+					this.lookForBestNewOrder();
 				}else{
 					// L'agent n'a pas reçu d'ordre
 					this.moveRandom();
 				}
 			}
+		}
 			
-			*/
+			
 		
 		// ----------------------------------------------------
-		/* Bouger */
+		/*ANCIENNE FONCTION STEP A SUPPRIMER
+		// Bouger 
 		if(this.isThereNewOrders()){
 			if(this.hasAdestination){			
-				/* Compare entre l'ordre actuel et les nouveaux */
+				// Compare entre l'ordre actuel et les nouveaux 
 				this.chooseBetweenDestinationAndNewOrders(CommunicationSystem.consultOrders(this));
 			}
 			else{
-				/* On r�cup�re le nouvel ordre */
+				// On r�cup�re le nouvel ordre 
 				this.order = this.compareAndChooseOrder(CommunicationSystem.consultOrders(this));
 				this.hasAdestination = true;
 			}
@@ -175,27 +181,30 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 			if(this.hasAdestination)
 				this.moveTowardsDestination();
 			else
-				this.moveRandom();
+				this.TotalMove();
 		}
 		
-		/* Cas o� on est arriv� � destination */
+		// Cas o� on est arriv� � destination 
 		if(this.hasAdestination){
 			if(this.location == this.order.getPosition()){
 				switch(this.order.getTargetType()){
 					case land:
-						/* L'agent cherche une case � proximit� � colorier */
+						// L'agent cherche une case � proximit� � colorier 
 						break;
 					case paintPot:
-						/* Il r�cup�re un tube de peinture */
+						// Il r�cup�re un tube de peinture 
 						this.rechargePaint(Statics.getPaintPot(this.grid,this.location));
 						break;
 					default:
 						break;
 				}
 			}
+			this.hasAdestination = false;
 		}
 	}
+	*/
 	
+
 	/**
 	 * Permet de colorier une zone 
 	 * EDIT : La zone de coloration est differente de la zone de perception
@@ -266,7 +275,10 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 			return;
 		
 		/* On se d�place sur nos cases si possible -> cases faisant partie d'un chemin possible */
+		int test = 0;
 		while(this.steps > 0) {
+			test++;
+			
 			/* Init des offset  */
 			if(this.order.getPosition().x < this.location.x) {
 				offsets[0] = new Int2D(-1,0);
@@ -312,21 +324,18 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		/* Variable locale */
 		boolean isSameColor;
 		int numberOfSteps;
+		Color currentColorCase;
 		
 		/* Sécurité d'utilisation */
 		if(offsets.length != 2) {
 			return false;
 		}
 		
-		/* Init number of steps */
-		if(desiredColor == this.colorAgent)
-			numberOfSteps = 1;
-		else
-			numberOfSteps = (desiredColor == Color.None) ? 2 : 3;
-		
-		/* On quitte si on ne peut pas se déplacer */
-		if(this.steps < numberOfSteps)
-			return false;
+		/* Init currentColorCase */
+		currentColorCase = Statics.GetColorOfCase(this.grid, this.location);
+
+		/* Récupèration de coût de déplacement */
+		numberOfSteps = Statics.computeCost(currentColorCase, this.colorAgent);
 		
 		/* On regarde si les cases sont de même couleur */
 		isSameColor = true;
@@ -341,7 +350,11 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		
 		/* Si cases de la même couleur */
 		if(isSameColor) {
-			if(Statics.GetColorOfCase(this.grid,this.location) == desiredColor) {
+			if(currentColorCase == desiredColor) {
+				/* On quitte si on ne peut pas se déplacer */
+				if(this.steps < numberOfSteps)
+					return false;
+				
 				// On se déplace le long de la coordonnée où il y a le plus de distance à parcourir
 				if(dist.x > dist.y)
 					this.setNewPosition(this.location.x + offsets[0].x,this.location.y);
@@ -365,9 +378,12 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		else {
 			for(int i = 0;i < offsets.length;i++) {
 				if(Statics.GetColorOfCase(this.grid, this.location.x + offsets[i].x,this.location.y + offsets[i].y) == desiredColor) {
-					this.setNewPosition(this.location.x + offsets[i].x, this.location.x + offsets[i].y);
-					this.steps -= numberOfSteps;
-					return true;
+					/* On se déplace uniquement si le coût de déplacement est inférieur au nombre de pas restant */
+					if(this.steps >= numberOfSteps) {
+						this.setNewPosition(this.location.x + offsets[i].x, this.location.x + offsets[i].y);
+						this.steps -= numberOfSteps;
+						return true;
+					}
 				}
 			}
 			return false;
@@ -463,34 +479,18 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		}else{
 			// L'objectif de l'agent est de peindre
 			// Il cherche la case au meilleur score 
-			
+			int currentGoalScore = Statics.computeScoreCell(this.grid, this.order.getPosition(), this.colorAgent);
+			int newOrderScore = Statics.computeScoreCell(this.grid, newOrder.getPosition(), this.colorAgent);
+			if(newOrderScore > currentGoalScore){
+				this.order = newOrder;
+			}
 		}
-		
-		
 	}
 	
 	/**
 	 * Permet de choisir entre la destination/ objectif actuelle et une destination parmi les ordres
 	 * @param orders -> Les nouveaux ordres
 	 */
-	/*
-	private void chooseBetweenDestinationAndNewOrders(ArrayList<Order> orders){
-		// Si l'ordre est de type "pot de peinture" et que l'agent est d�ja charg�, on ignore l'ordre 
-		
-		
-		
-		//R�cup�ration de la destination la plus proche parmi les ordres 
-		Order bestOrder = this.compareAndChooseOrder(orders);
-		
-		// R�cup�ration des distances par rapport � l'agent 
-		int dist_order = this.calculateDistanceScore(bestOrder.getPosition());
-		int dist_destination = this.calculateDistanceScore(this.order.getPosition());
-		
-		// Mis � jour si le nouvel ordre est meilleur 
-		if(dist_order < dist_destination)
-			this.order.setPosition(bestOrder.getPosition());
-	}
-*/
 	
 	private int calculateDistanceScore(Int2D targetLocation){
 		

@@ -123,6 +123,7 @@ public class GridModel extends SimState {
 		for(i = 0; i < Constants.NUM_AGENTS; i++) {
 			temp = FactoryAgent.make((i < Constants.MAX_SCOUT_AGENTS) ? ScoutAgent.class : ColoringAgent.class,Color.Red);
 			grid.setObjectLocation(temp, getFreeLocation(Constants.SPAWN_ZONE_INIT, -1));
+			temp.setLocation(grid.getObjectLocation(temp));
 			this.listAgents.add(temp);
 			schedule.scheduleRepeating(temp);
 		}
@@ -131,6 +132,7 @@ public class GridModel extends SimState {
 		for(i = 0; i < Constants.NUM_AGENTS; i++) {
 			temp = FactoryAgent.make((i < Constants.MAX_SCOUT_AGENTS) ? ScoutAgent.class : ColoringAgent.class,Color.Blue);
 			grid.setObjectLocation(temp, getFreeLocation(grid.getHeight() - Constants.SPAWN_ZONE_INIT));
+			temp.setLocation(grid.getObjectLocation(temp));
 			this.listAgents.add(temp);
 			schedule.scheduleRepeating(temp);
 		}		

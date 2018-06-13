@@ -49,6 +49,15 @@ public final class Statics {
 		return null;
 	}
 	
+	public static PaintPot GetPaintPot(GridModel grid,Int2D position){
+		
+		for(Object obj : grid.getGrid().getObjectsAtLocation(position.x, position.y)) {
+			if(obj instanceof PaintPot)
+				return (PaintPot)obj;
+		}
+		return null;
+	}
+	
 	
 	
 	/**
@@ -69,6 +78,20 @@ public final class Statics {
 		}
 		return result;
 	}
+	
+	/**
+	 * Calcule le cout de déplacement pour pouvoir quitter une case
+	 * @param currentCaseColor -> Case où l'agent se trouve
+	 * @param myColor -> Couleur de l'agent
+	 * @return int -> chiffre représentant le coût de déplacement
+	 */
+	public static int computeCost(Color currentCaseColor, Color myColor) {
+		int cost = 0;
+		if(currentCaseColor == myColor) cost = 1;     //on est chez nous 
+		if(currentCaseColor != myColor && currentCaseColor!= model.Color.None) cost = 3;  //on est chez les adversaires
+		if(currentCaseColor != myColor) cost = 2;             // on est sur une case neutre
+		return cost;
+	} 
 	
 	/**
 	 * @param location -> Position de la case
@@ -192,5 +215,19 @@ public final class Statics {
 	 */
 	public static PaintPot getPaintPot(GridModel grid,Int2D pos){
 		return Statics.getPaintPot(grid.getGrid().getObjectsAtLocation(pos.x, pos.y));
+	}
+	
+	public static int computeScoreCell(GridModel grid, Int2D cell, Color colorAgent) {
+		int score = 0;
+		Bag BagToEvaluate = null;
+		for(int i = -1; i != 1; i++) {
+			for(int j = -1; j != 1; j++) {
+				BagToEvaluate = grid.getGrid().getObjectsAtLocation(cell.x + i, cell.y + j);
+				Color colorCase = GetCaseColor(BagToEvaluate).getColor();
+				if(colorCase == colorAgent) score = score + 0;
+				else score = score + 1;
+			}			
+		}
+		return score;
 	}
 }

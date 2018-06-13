@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import model.Color;
+import model.CaseColor;
 import model.CaseColorListWrap;
 
 import sim.engine.SimState;
 import sim.engine.Steppable;
 import sim.engine.Stoppable;
-
 import sim.util.Int2D;
 import util.Constants;
 import util.Statics;
@@ -75,8 +75,28 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 		this.steps = Constants.MAX_STEPS;
 	}
 	
+	public void TotalMove() {       //cette fonction permet de g�rer les points d'�nergie/ le co�t des d�placements
+		CaseColor currentColor = Statics.GetCaseColor(this.grid.getGrid().getObjectsAtLocation(this.location.x, this.location.y));
+		int costOfMove = Statics.computeCost(currentColor.getColor(), this.getColorAgent());
 
-	public void moveRandom(){
+		while (this.steps >= costOfMove) {
+			moveWithoutObjective();
+			this.steps = this.steps - costOfMove;
+			currentColor = Statics.GetCaseColor(this.grid.getGrid().getObjectsAtLocation(this.location.x, this.location.y));
+			costOfMove = Statics.computeCost(currentColor.getColor(), this.getColorAgent());
+		}
+		this.grid.getGrid().setObjectLocation(this, this.location);
+	}
+	
+	
+	public void moveWithoutObjective(){		
+		// Mouvement al�atoire
+		this.location = this.moveRandom();
+
+	}
+	
+	protected Int2D moveRandom() {
+		
 		Int2D newLocation = this.location;
 		Random generator = new Random();
 		int rand = generator.nextInt(4);
@@ -84,26 +104,28 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 		switch(rand)
 		{
 			case 0:
-				if(this.location.x != 49) newLocation =  new Int2D(this.location.x + 1, this.location.y);
+				if(this.location.x < 49) newLocation =  new Int2D(this.location.x + 1, this.location.y);
+				else newLocation =  new Int2D(this.location.x - 1, this.location.y);
 				break;
 			case 1:
-				if(this.location.x != 0) newLocation =  new Int2D(this.location.x - 1, this.location.y);
+				if(this.location.x > 0) newLocation =  new Int2D(this.location.x - 1, this.location.y);
+				else newLocation =  new Int2D(this.location.x + 1, this.location.y);
 				break;
 			case 2:
-				if(this.location.y != 49) newLocation =  new Int2D(this.location.x, this.location.y + 1);
+				if(this.location.y < 49) newLocation =  new Int2D(this.location.x, this.location.y + 1);
+				else newLocation =  new Int2D(this.location.x, this.location.y - 1);
 				break;
 			case 3:
-				if(this.location.y != 0) newLocation =  new Int2D(this.location.x, this.location.y - 1);
+				if(this.location.y > 0) newLocation =  new Int2D(this.location.x, this.location.y - 1);
+				else newLocation =  new Int2D(this.location.x, this.location.y + 1);
 				break;
-
 		}
-		
-		this.grid.getGrid().setObjectLocation(this, newLocation);
-		
+		return newLocation;
 	}
 	
-	/* Permet à un agent de percevoir */
+
 	
+	/* Permet à un agent de percevoir */
 	public ArrayList<Integer> determineLimits(){      // determine les limites de la perception en prenant en compte la taille de la grille
 		
 		ArrayList<Integer> limits = new ArrayList<Integer>();
@@ -226,6 +248,15 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 	 */
 	public void setNewPosition(int x,int y) {
 		this.grid.getGrid().setObjectLocation(this, x, y);
+		this.setLocation(x, y);
+	}
+	
+	public void setLocation(Int2D location) {
+		this.location = location;
+	}
+	
+	public void setLocation(int x,int y) {
+		this.location = new Int2D(x,y);
 	}
 	
 	/* Getteurs */
