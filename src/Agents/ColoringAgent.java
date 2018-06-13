@@ -171,7 +171,6 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		
 		/* On se d�place sur nos cases si possible -> cases faisant partie d'un chemin possible */
 		int test = 0;
-		System.out.println(this.location);
 		while(this.steps > 0) {
 			test++;
 			
@@ -208,8 +207,6 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 					break;
 			}
 		}
-		System.out.println("Nombre de déplacements : "+test);
-		System.out.println(this.location);
 	}
 		
 	public void compareDestinations(){
