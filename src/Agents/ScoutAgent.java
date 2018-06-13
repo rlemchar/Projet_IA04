@@ -1,7 +1,6 @@
 package Agents;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import util.Constants;
 import util.Statics;
@@ -10,7 +9,6 @@ import model.Color;
 import model.CommunicationSystem;
 import model.Order;
 import model.PaintPot;
-import model.CaseColor;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 import sim.util.Bag;
@@ -43,17 +41,17 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 		super.step(state);
 		this.detectRelevantInformation();
 		this.informOthers();
-		this.resetDetections();	
-		moveWithoutObjective();
+		this.resetDetections();
+		this.TotalMove();
 	}
 
-	
+	@Override
 	public void moveWithoutObjective(){		
-		// Mouvement aléatoire
+		// Mouvement alï¿½atoire
 		Int2D newLocation = this.moveRandom();
-		//	S'écarte des autres Scouts Agents de la même couleur
+		//	S'ï¿½carte des autres Scouts Agents de la mï¿½me couleur
 		if(this.avoidScoutAgent() != null) newLocation = this.avoidScoutAgent();
-		//	S'écarte des bords pour couvrir le maximum de surface
+		//	S'ï¿½carte des bords pour couvrir le maximum de surface
 		if(this.avoidEdge() != null) newLocation = this.avoidEdge();
 
 		
@@ -167,6 +165,7 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 	
 	int calculateDistanceScore(Int2D agentLocalisation, Int2D targetLocalisation){
 		
+		System.out.println("ma localisation : " + agentLocalisation.x + "   " + agentLocalisation.y);
 		int xdistance = Math.abs(agentLocalisation.x - targetLocalisation.x);
 		int ydistance = Math.abs(agentLocalisation.y - targetLocalisation.y);
 		

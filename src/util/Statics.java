@@ -62,6 +62,14 @@ public final class Statics {
 		return result;
 	}
 	
+	public static int computeCost(Color currentCaseColor, Color myColor) {
+		int cost = 0;
+		if(currentCaseColor == myColor) cost = 1;     //on est chez nous 
+		if(currentCaseColor != myColor && currentCaseColor!= model.Color.None) cost = 3;  //on est chez les adversaires
+		if(currentCaseColor != myColor) cost = 2;             // on est sur une case neutre
+		return cost;
+	} 
+	
 	/**
 	 * @param location -> Position de la case
 	 * @param grid -> Grille de simulation

@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import model.Color;
+import model.CaseColor;
 import model.CaseColorListWrap;
 
 import sim.engine.SimState;
 import sim.engine.Steppable;
 import sim.engine.Stoppable;
-import sim.util.Bag;
 import sim.util.Int2D;
 import util.Constants;
 import util.Statics;
@@ -75,9 +75,30 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 		this.steps = Constants.MAX_STEPS;
 	}
 	
-	protected Int2D moveRandom() {
-		Int2D newLocation = null;
+	public void TotalMove() {       //cette fonction permet de g�rer les points d'�nergie/ le co�t des d�placements
+		CaseColor currentColor = Statics.GetCaseColor(this.grid.getGrid().getObjectsAtLocation(this.location.x, this.location.y));
+		int costOfMove = Statics.computeCost(currentColor.getColor(), this.getColorAgent());
 
+		while (this.steps >= costOfMove) {
+			moveWithoutObjective();
+			this.steps = this.steps - costOfMove;
+			currentColor = Statics.GetCaseColor(this.grid.getGrid().getObjectsAtLocation(this.location.x, this.location.y));
+			costOfMove = Statics.computeCost(currentColor.getColor(), this.getColorAgent());
+		}
+		this.grid.getGrid().setObjectLocation(this, this.location);
+	}
+	
+	
+	public void moveWithoutObjective(){		
+		// Mouvement al�atoire
+		Int2D newLocation = this.moveRandom();
+
+		this.grid.getGrid().setObjectLocation(this, newLocation);
+	}
+	
+	protected Int2D moveRandom() {
+		
+		Int2D newLocation = null;
 		Random generator = new Random();
 		int rand = generator.nextInt(4);
 		
@@ -113,10 +134,6 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 		
 		return newLocation;
 	}
-	
-	
-
-	
 	
 	
 	
@@ -243,6 +260,10 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 	 */
 	public void setNewPosition(int x,int y) {
 		this.grid.getGrid().setObjectLocation(this, x, y);
+	}
+	
+	public void setLocation(Int2D location) {
+		this.location = location;
 	}
 	
 	/* Getteurs */
