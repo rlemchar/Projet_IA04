@@ -76,7 +76,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 			if(this.hasAdestination)
 				this.moveTowardsDestination();
 			else
-				this.moveRandom();
+				this.TotalMove();
 		}
 		
 		/* Cas où on est arrivé à destination */

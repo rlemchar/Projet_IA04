@@ -43,14 +43,14 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 	public void step(SimState state) {
 		super.step(state);
 		this.lastPerception = perceive();
-		moveRandom();
+		this.TotalMove();
 		this.detectRelevantInformation();
 		this.informOthers();
 		this.resetDetections();
-
-		
 	}
 	
+
+
 	private Int2D moveRandom3() {
 		Int2D newLocation = null;
 
@@ -127,20 +127,14 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 	
 	
 	@Override
-	public void moveRandom(){		
+	public void moveRandom(){
 		
-		Int2D newLocation = this.moveRandom3();
-//		
-		if(this.moveRandom2() != null) newLocation = this.moveRandom2();
-//		
+		Int2D newLocation = this.moveRandom3();	
+		if(this.moveRandom2() != null) newLocation = this.moveRandom2();	
 		if(this.moveRandom1() != null) newLocation = this.moveRandom1();
-//		
-		this.grid.getGrid().setObjectLocation(this, newLocation);
-		
-		detectRelevantInformation();
-		informOthers();
-		resetDetections();
-		
+
+		this.location = newLocation;
+
 	}
 	
 	public void informOthers(){
@@ -216,6 +210,7 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 	
 	int calculateDistanceScore(Int2D agentLocalisation, Int2D targetLocalisation){
 		
+		System.out.println("ma localisation : " + agentLocalisation.x + "   " + agentLocalisation.y);
 		int xdistance = Math.abs(agentLocalisation.x - targetLocalisation.x);
 		int ydistance = Math.abs(agentLocalisation.y - targetLocalisation.y);
 		

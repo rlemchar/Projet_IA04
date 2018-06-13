@@ -22,9 +22,9 @@ public class PaintPot implements Steppable {
 	@Override
 	public void step(SimState state) {
 		model = (GridModel) state;
-		Int2D pos = model.getGrid().getObjectLocation(this);
+		Int2D pos = model.getGrid().getObjectLocation(this);    // -Yann-  ça sert à quoi ça ? 
 		if(empty()) replace();
-		decQuantity();
+		//decQuantity();
 		
 	}
 	//Construction d'un nouveau pot de peinture

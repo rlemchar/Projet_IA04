@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import model.Color;
+import model.CaseColor;
 import model.CaseColorListWrap;
 
 import sim.engine.SimState;
@@ -75,6 +76,18 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 		this.steps = Constants.MAX_STEPS;
 	}
 	
+	public void TotalMove() {       //cette fonction permet de gérer les points d'énergie/ le coût des déplacements
+		CaseColor currentColor = Statics.GetCaseColor(this.grid.getGrid().getObjectsAtLocation(this.location.x, this.location.y));
+		int costOfMove = Statics.computeCost(currentColor.getColor(), this.getColorAgent());
+
+		while (this.steps >= costOfMove) {
+			moveRandom();
+			this.steps = this.steps - costOfMove;
+			currentColor = Statics.GetCaseColor(this.grid.getGrid().getObjectsAtLocation(this.location.x, this.location.y));
+			costOfMove = Statics.computeCost(currentColor.getColor(), this.getColorAgent());
+		}
+		this.grid.getGrid().setObjectLocation(this, this.location);
+	}
 
 	public void moveRandom(){
 		Int2D newLocation = this.location;
@@ -98,7 +111,7 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 
 		}
 		
-		this.grid.getGrid().setObjectLocation(this, newLocation);
+		this.location = newLocation;
 		
 	}
 	
@@ -226,6 +239,10 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 	 */
 	public void setNewPosition(int x,int y) {
 		this.grid.getGrid().setObjectLocation(this, x, y);
+	}
+	
+	public void setLocation(Int2D location) {
+		this.location = location;
 	}
 	
 	/* Getteurs */
