@@ -46,6 +46,7 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 		this.detectRelevantInformation();
 		this.informOthers();
 		this.resetDetections();
+
 		
 		
 	}
