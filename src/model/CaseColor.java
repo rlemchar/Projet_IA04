@@ -1,6 +1,11 @@
 package model;
 
 import sim.util.Int2D;
+import model.MyColor;
+
+import java.awt.Paint;
+
+import sim.portrayal.simple.RectanglePortrayal2D;
 
 /**
  * 
@@ -9,9 +14,9 @@ import sim.util.Int2D;
  * @author wakidou
  *
  */
-public class CaseColor {
+public class CaseColor extends RectanglePortrayal2D{
 	/** La couleur **/
-	private Color color;
+	private MyColor color;
 	
 	/** Coordonnées de la case **/
 	protected Int2D location;
@@ -25,7 +30,7 @@ public class CaseColor {
 	 * Constructeur avec une couleur pour la case
 	 * @param color
 	 */
-	public CaseColor(Color color){
+	public CaseColor(MyColor color){
 		this.color = color;
 	}
 	
@@ -34,7 +39,7 @@ public class CaseColor {
 	 * @param color 
 	 * @param location
 	 */
-	public CaseColor(Color color,Int2D location) {
+	public CaseColor(MyColor color,Int2D location) {
 		this(color);
 		this.location = location;
 	}
@@ -45,13 +50,18 @@ public class CaseColor {
 	 * @param x
 	 * @param y
 	 */
-	public CaseColor(Color color,int x,int y) {
+	public CaseColor(MyColor color,int x,int y) {
 		this(color,new Int2D(x,y));
+	}
+	
+	
+	public void draw(Paint color) {
+		this.paint = color;
 	}
 
 	/* Getteur et setteur pour la couleur */
-	public Color getColor() { return color; }
-	public void setColor(Color color) { this.color = color; }
+	public MyColor getColor() { return color; }
+	public void setColor(MyColor color) { this.color = color; }
 	
 	/* Getteur pour la location */
 	public int getX() { return this.location.x; }

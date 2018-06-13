@@ -1,11 +1,13 @@
 package Agents;
 
+	import java.awt.Color;
+
 import model.GridModel;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import model.Color;
+import model.MyColor;
 import model.CaseColor;
 import model.CaseColorListWrap;
 
@@ -48,10 +50,10 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 	protected int steps;
 	
 	/* Agent Color */
-	protected Color colorAgent;
+	protected MyColor colorAgent;
 	
 	/* Opposite color */
-	protected Color oppositeColor;
+	protected MyColor oppositeColor;
 	
 	/* Constructeur par defaut */
 	public AgentOnField() {
@@ -60,10 +62,10 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 	}
 	
 	/* Constructeur avec couleur agent */
-	public AgentOnField(Color colorAgent){
+	public AgentOnField(MyColor colorAgent){
 		this();
 		this.colorAgent = colorAgent;
-		this.oppositeColor = (this.colorAgent == Color.Blue) ? Color.Red : Color.Blue;
+		this.oppositeColor = (this.colorAgent == MyColor.Blue) ? MyColor.Red : MyColor.Blue;
 	}
 	
 	/* Step */
@@ -78,7 +80,6 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 	public void TotalMove() {       //cette fonction permet de g�rer les points d'�nergie/ le co�t des d�placements
 		CaseColor currentColor = Statics.GetCaseColor(this.grid.getGrid().getObjectsAtLocation(this.location.x, this.location.y));
 		int costOfMove = Statics.computeCost(currentColor.getColor(), this.getColorAgent());
-
 		while (this.steps >= costOfMove) {
 			moveWithoutObjective();
 			this.steps = this.steps - costOfMove;
@@ -219,17 +220,17 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 	
 	/** Strategie de base pour tout les agents lors des déplacements **/
 	@Override
-	public Color StrategyMove() {
+	public MyColor StrategyMove() {
 		return getColorAgent();
 	}
 	
 	@Override 
-	public Color OtherWiseMove() {
-		return Color.None;
+	public MyColor OtherWiseMove() {
+		return MyColor.None;
 	}
 	
 	@Override 
-	public Color WorstCaseMove() {
+	public MyColor WorstCaseMove() {
 		return this.oppositeColor;
 	}
 	
@@ -260,10 +261,10 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 	}
 	
 	/* Getteurs */
-	public Color getColorAgent() { return this.colorAgent; }
+	public MyColor getColorAgent() { return this.colorAgent; }
 	
 	/* Setteurs */
-	public void setColorAgent(Color colorAgent) { this.colorAgent = colorAgent; }
+	public void setColorAgent(MyColor colorAgent) { this.colorAgent = colorAgent; }
 	public void setGrid(GridModel grid) { this.grid = grid; }
 	
 	

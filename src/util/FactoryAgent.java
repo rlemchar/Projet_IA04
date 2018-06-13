@@ -1,7 +1,7 @@
 package util;
 
 import Agents.AgentOnField;
-import model.Color;
+import model.MyColor;
 
 /**
  * 
@@ -16,9 +16,9 @@ public final class FactoryAgent {
 	 * @param colorAgent -> Couleur de l'agent
 	 * @return Une nouvelle instance d'un agent 
 	 */
-	public static AgentOnField make(Class<? extends AgentOnField> c,Color colorAgent) {
+	public static AgentOnField make(Class<? extends AgentOnField> c,MyColor colorAgent) {
 		try {
-			if(colorAgent == Color.None)
+			if(colorAgent == MyColor.None)
 				throw new IllegalArgumentException("L'agent doit posséder une couleur !");
 				
 			AgentOnField agent = (AgentOnField)c.newInstance();

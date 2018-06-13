@@ -7,6 +7,7 @@ import Agents.AgentOnField;
 import Agents.ScoutAgent;
 import model.GridModel;
 import model.PaintPot;
+import model.CaseColor;
 import sim.display.Controller;
 import sim.display.Display2D;
 import sim.display.GUIState;
@@ -53,6 +54,7 @@ public class GridGUI extends GUIState {
 			yardPortrayal.setPortrayalForObject(agent, getIntLabelForObject(agent));
 		});
 		
+		
 		/* Affichage de la grille */
 		display.reset();
 		display.setBackdrop(Color.GREEN);
@@ -76,6 +78,8 @@ public class GridGUI extends GUIState {
 		r.filled = true;
 		return new IntLabel(r, labelName);
 	}
+	
+	
 	
 	/**
 	 * @param color -> Couleur des agents

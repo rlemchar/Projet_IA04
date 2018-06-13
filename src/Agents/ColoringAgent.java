@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.stream.Stream;
 
 import model.CaseColor;
-import model.Color;
+import model.MyColor;
 import model.CommunicationSystem;
 import model.Order;
 import model.PaintPot;
@@ -47,7 +47,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	 * Constructeur en initialisant la couleur de l'agent
 	 * @param colorAgent Couleur de l'agent
 	 */
-	public ColoringAgent(Color colorAgent) {
+	public ColoringAgent(MyColor colorAgent) {
 		super(colorAgent);
 		this.numberOfTubeOfPaint = 0;
 
@@ -124,7 +124,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 			/* On colorie et/ou on rend les cases neutre d'abord */
 			for(CaseColor cell : colorZoneFiltered.toArray(CaseColor[]::new)){
 				if(this.HasPaint()){
-					cell.setColor(cell.getColor() == Color.None ? this.colorAgent : Color.None);
+					cell.setColor(cell.getColor() == MyColor.None ? this.colorAgent : MyColor.None);
 					this.numberOfTubeOfPaint--;
 				}		
 				else
@@ -219,11 +219,11 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	 * @param offset -> offset pour repérer les cases adjacentes
 	 * @param dist -> distance selon chaque axe entre la destination et la position actuelle
 	 */
-	private boolean MoveOnNewCellAccordingToColor(Color desiredColor,Int2D[] offsets,Int2D dist) {
+	private boolean MoveOnNewCellAccordingToColor(MyColor desiredColor,Int2D[] offsets,Int2D dist) {
 		/* Variable locale */
 		boolean isSameColor;
 		int numberOfSteps;
-		Color currentColorCase;
+		MyColor currentColorCase;
 		
 		/* Sécurité d'utilisation */
 		if(offsets.length != 2) {
@@ -238,7 +238,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		
 		/* On regarde si les cases sont de même couleur */
 		isSameColor = true;
-		Color prec = Color.None;
+		MyColor prec = MyColor.None;
 		for(int i = 0; i < offsets.length; i++)
 			if(i != 0) {
 				isSameColor &= 

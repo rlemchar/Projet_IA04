@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import util.Constants;
 import util.Statics;
 import util.TargetType;
-import model.Color;
+import model.MyColor;
 import model.CommunicationSystem;
 import model.Order;
 import model.PaintPot;
@@ -27,7 +27,7 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 		this.powerOfPerception = Constants.PERCEPTION_FOR_SCOUT_AGENT;
 	}
 	
-	public ScoutAgent(Color colorAgent) {
+	public ScoutAgent(MyColor colorAgent) {
 		super();
 	}
 
