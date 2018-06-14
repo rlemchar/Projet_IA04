@@ -97,10 +97,9 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 							// L'agent n'a pas de destination
 							this.moveRandom();
 						}
-						
-						}
 					}
-				}else{
+				}
+			}else{
 				// L'agent cherche une case à colorier une case
 				int currentDestinationScore = Statics.computeScoreCell(this.grid, this.order.getPosition(),this.colorAgent);
 				int currentPositionScore = Statics.computeScoreCell(this.grid,this.location,this.colorAgent);
@@ -417,9 +416,13 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	
 	// Partie communication / Execution ordre
 	
-	// Donne l'ordre le plus interessant compte tenu de l'objectif de l'agent
-	// Si l'objectif est de trouver de la peinture, le plus intéressant est le plus proche
-	// Si l'objectif est de peindre, le plus intéressant est celui qui a le meilleur score
+	/**
+	 * Donne l'ordre le plus interessant parmis ceux reçus par l'agent compte tenu de l'objectif de l'agent
+	 * La fonction attribut l'ordre à l'agent
+	 * Si l'objectif est de trouver de la peinture, le plus intéressant est le plus proche
+	 * Si l'objectif est de peindre, le plus intéressant est celui qui a le meilleur score
+	 * @return
+	 */
 	public Order lookForBestNewOrder(){
 		
 		ArrayList<Order> lastOrders = CommunicationSystem.consultOrders(this);
@@ -465,7 +468,12 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		}
 	}
 	
-	
+	/**
+	 * Cette fonction compare l'ordre actuel à un autre nouvellement reçu (choisi par la fonction
+	 * lookForBestOrder())
+	 * Elle modifie l'ordre objectif si le nouvel ordre est plus interessant
+	 * @param newOrder
+	 */
 	public void compareAndExchangeCurrentOrderWithNewOne(Order newOrder){
 		
 		if (this.target == TargetType.paintPot){
