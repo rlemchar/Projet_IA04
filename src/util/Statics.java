@@ -8,9 +8,6 @@ import model.CaseColorListWrap;
 import sim.util.Bag;
 import sim.util.Int2D;
 import model.GridModel;
-import model.PaintPot;
-
-import Agents.ScoutAgent;
 
 /**
 --------------------------------------------------------------------
@@ -20,33 +17,46 @@ import Agents.ScoutAgent;
 
 
 public final class Statics {
+	
 	/**
-	 * @param objects -> Liste spéciale retourné par la méthode getObjectsAtLocation
-	 * @return L'objet représentant la couleur de la case sinon null
+	 * Retourne un objet du type souhaité 
+	 * @param objects -> liste d'objets récupérés sur une ou plusieurs cas 
+	 * @param classT -> la classe d'objet recherché
+	 * @return l'objet sinon null
 	 */
-	public static CaseColor GetCaseColor(Bag objects){
-		for(Object obj : objects) {
-			if(obj instanceof CaseColor)
-				return (CaseColor)obj;
+	public static Object Get(Bag objects,Class<?> classT){	
+		/* Sécurité : liste d'objets non null */
+		if(objects != null) {
+			/* Recherche de l'objet désiré */
+			for(Object obj : objects) {
+				if(classT.isInstance(obj))
+					return classT.cast(obj);
+			}
 		}
 		return null;
 	}
 	
-	
-	public static ScoutAgent GetScoutAgent(Bag objects){
-		for(Object obj : objects) {
-			if(obj instanceof ScoutAgent)
-				return (ScoutAgent)obj;
-		}
-		return null;
+	/**
+	 * Retourne un objet du type souhaité à la position souhaité
+	 * @param grid -> Grille de simulation
+	 * @param classT -> classe de l'objet à trouver
+	 * @param location -> endroit de recherche
+	 * @return l'objet sinon null
+	 */
+	public static Object Get(GridModel grid,Class<?> classT,Int2D location) {
+		return Statics.Get(grid.getGrid().getObjectsAtLocation(location), classT);
 	}
 	
-	public static PaintPot GetPaintPot(Bag objects){
-		for(Object obj : objects) {
-			if(obj instanceof PaintPot)
-				return (PaintPot)obj;
-		}
-		return null;
+	/**
+	 * Retourne un objet du type souhaité à la position souhaité
+	 * @param grid -> Grille de simulation
+	 * @param classT -> classe de l'objet à trouver
+	 * @param x -> abscisse
+	 * @param y -> ordonnée
+	 * @return l'objet sinon null
+	 */
+	public static Object Get(GridModel grid,Class<?> classT,int x,int y) {
+		return Statics.Get(grid.getGrid().getObjectsAtLocation(x,y), classT);
 	}
 	
 	/**
@@ -62,7 +72,7 @@ public final class Statics {
 		for(int x = pointTopLeft.x; x < sizeX && x < grid.getGrid().getHeight();x++){
 			for(int y = pointTopLeft.y; y < sizeY && x < grid.getGrid().getWidth() ;y++){
 				// On suppose que la case couleur est bien trouv� -> retour de GetCaseColor non null
-				result.add(Statics.GetCaseColor(grid.getGrid().getObjectsAtLocation(x, y)));
+				result.add((CaseColor)Statics.Get(grid.getGrid().getObjectsAtLocation(x, y),CaseColor.class));
 			}
 		}
 		return result;
@@ -99,7 +109,7 @@ public final class Statics {
 	 * @return
 	 */
 	public static MyColor GetColorOfCase(GridModel grid,int x,int y) {
-		return Statics.GetCaseColor(grid.getGrid().getObjectsAtLocation(x,y)).getColor();
+		return ((CaseColor)Statics.Get(grid.getGrid().getObjectsAtLocation(x,y),CaseColor.class)).getColor();
 	}
 	
 	/**
@@ -124,7 +134,7 @@ public final class Statics {
 		CaseColorListWrap result = new CaseColorListWrap();
 		cellsToAnalyse.stream()
 			.forEach(cell -> {
-				CaseColor colorOfCase = Statics.GetCaseColor(grid.getGrid().getObjectsAtLocation(cell.x, cell.y));
+				CaseColor colorOfCase = (CaseColor)Statics.Get(grid.getGrid().getObjectsAtLocation(cell.x, cell.y),CaseColor.class);
 				switch(colorOfCase.getColor()) {
 					case Blue:
 						result.AddBlue(cell);
@@ -172,41 +182,6 @@ public final class Statics {
 		return allFound;
 	}
 	
-	
-	/**
-	 * Permet de r�cup�rer le pot de peinture depuis un bag
-	 * @param objects -> Liste / Bag d'objets o� chercher le pot de peinture
-	 * @return le pot de peinture sinon null
-	 */
-	public static PaintPot getPaintPot(Bag objects){
-		for(Object obj : objects) {
-			if(obj instanceof PaintPot)
-				return (PaintPot)obj;
-		}
-		return null;
-	}
-	
-	/**
-	 * Permet de r�cup�rer le pot de peinture � une position x,y
-	 * @param grid -> Grille de simulation
-	 * @param x -> abscisse
-	 * @param y -> ordonn�e
-	 * @return le pot de peinture sinon null
-	 */
-	public static PaintPot getPaintPot(GridModel grid,int x, int y){
-		return Statics.getPaintPot(grid.getGrid().getObjectsAtLocation(x, y));
-	}
-	
-	/**
-	 * Permet de r�cup�rer le pot de peinture � une position x,y
-	 * @param grid -> Grille de simulation
-	 * @param pos -> Int2D repr�sentant la position de recherche
-	 * @return le pot de peinture sinon null
-	 */
-	public static PaintPot getPaintPot(GridModel grid,Int2D pos){
-		return Statics.getPaintPot(grid.getGrid().getObjectsAtLocation(pos.x, pos.y));
-	}
-	
 	/**
 	 * Décompte le nombre de cases qui n'appartient pas ne sont pas 
 	 * de la même couleur de référence passé en paramètre sur une zone donnée
@@ -219,7 +194,7 @@ public final class Statics {
 		int score = 0;
 		for(int i = -1; i <= 1; i++) {
 			for(int j = -1; j <= 1; j++) {
-				MyColor colorCase = GetCaseColor(grid.getGrid().getObjectsAtLocation(cell.x + i, cell.y + j)).getColor();
+				MyColor colorCase = ((CaseColor)Get(grid.getGrid().getObjectsAtLocation(cell.x + i, cell.y + j),CaseColor.class)).getColor();
 				if(colorCase != colorAgent) 
 					score++;
 			}			

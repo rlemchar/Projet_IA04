@@ -71,11 +71,11 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		/* L'agent cherche des pots de peinture */
 		if (this.target == TargetType.paintPot){
 			/* Si l'agent a rechargé , on efface sa mission */
-			if(this.rechargePaint(Statics.getPaintPot(this.grid, this.location.x,this.location.y))){
+			if(this.rechargePaint((PaintPot)Statics.Get(this.grid,PaintPot.class, this.location))){
 				this.resetTarget();
 			}
 		}
-		// L'agent cherche à colorier un groupe de cases
+		// L'agent cherche à colorier une case
 		else{
 			/* Si l'agent est arrivé à destination */
 			if(this.location == this.getDestination()) { 

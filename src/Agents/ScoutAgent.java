@@ -77,30 +77,27 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 
 	private Int2D avoidScoutAgent() {
 		Int2D newLocation = null;
-		
 		for(Int2D cell : this.lastPerception) {
-			Bag objects = this.grid.getGrid().getObjectsAtLocation(cell.x, cell.y);
-			if (objects != null){
-				ScoutAgent secondScout = Statics.GetScoutAgent(objects);
-				if (secondScout != null && secondScout != this && secondScout.getColorAgent() == this.colorAgent){
-					// Il y'a un agent scout dans la case, on s'en eloigner
-					int distanceX = cell.x  - this.location.x; // Si > 0 aller � gauche
-					int distanceY = cell.y - this.location.y;  // Si > 0 aller en bas
-					
-					if(Math.abs(distanceX) > Math.abs(distanceY)){
-						if(distanceY > 0)
-							newLocation =  new Int2D(this.location.x, this.location.y - 1);
-						else
-							newLocation =  new Int2D(this.location.x, this.location.y + 1);
-					}
-					else{
-						if(distanceX > 0)
-							newLocation =  new Int2D(this.location.x - 1, this.location.y);
-						else
-							newLocation =  new Int2D(this.location.x + 1, this.location.y);
-					}
+			ScoutAgent secondScout = (ScoutAgent)Statics.Get(this.grid.getGrid().getObjectsAtLocation(cell.x, cell.y),ScoutAgent.class);
+			if (secondScout != null && secondScout != this && secondScout.getColorAgent() == this.colorAgent){
+				// Il y'a un agent scout dans la case, on s'en eloigner
+				int distanceX = cell.x  - this.location.x; // Si > 0 aller � gauche
+				int distanceY = cell.y - this.location.y;  // Si > 0 aller en bas
+				
+				if(Math.abs(distanceX) > Math.abs(distanceY)){
+					if(distanceY > 0)
+						newLocation =  new Int2D(this.location.x, this.location.y - 1);
+					else
+						newLocation =  new Int2D(this.location.x, this.location.y + 1);
+				}
+				else{
+					if(distanceX > 0)
+						newLocation =  new Int2D(this.location.x - 1, this.location.y);
+					else
+						newLocation =  new Int2D(this.location.x + 1, this.location.y);
 				}
 			}
+			
 		}
 		
 		return newLocation;

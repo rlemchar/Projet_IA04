@@ -75,12 +75,12 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 	}
 	
 	public void TotalMove() {       //cette fonction permet de g�rer les points d'�nergie/ le co�t des d�placements
-		CaseColor currentColor = Statics.GetCaseColor(this.grid.getGrid().getObjectsAtLocation(this.location.x, this.location.y));
+		CaseColor currentColor = (CaseColor)Statics.Get(this.grid.getGrid().getObjectsAtLocation(this.location.x, this.location.y),CaseColor.class);
 		int costOfMove = Statics.computeCost(currentColor.getColor(), this.getColorAgent());
 		while (this.steps >= costOfMove) {
 			moveWithoutObjective();
 			this.steps = this.steps - costOfMove;
-			currentColor = Statics.GetCaseColor(this.grid.getGrid().getObjectsAtLocation(this.location.x, this.location.y));
+			currentColor = (CaseColor)Statics.Get(this.grid.getGrid().getObjectsAtLocation(this.location.x, this.location.y),CaseColor.class);
 			costOfMove = Statics.computeCost(currentColor.getColor(), this.getColorAgent());
 		}
 		this.grid.getGrid().setObjectLocation(this, this.location);
