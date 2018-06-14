@@ -9,13 +9,13 @@ import util.TargetType;
 public class Order {
 	
 	/* Emetteur */
-	ScoutAgent orderingAgent;
+	private ScoutAgent orderingAgent;
 	
 	/* Destinataire */
-	ColoringAgent intendedAgent;
+	private ColoringAgent intendedAgent;
 	
 	/* Destination */
-	Int2D position;
+	private Int2D position;
 	
 	/* Type de l'ordre */
 	private TargetType targetType;
@@ -23,13 +23,16 @@ public class Order {
 	/* Score permettant de donner un niveau � la zone � colorier */
 	private int scoreForLandType;
 	
+	public Order(Int2D position) {
+		this.position = position;
+	}
+	
 	public Order(ScoutAgent orderingAgent,ColoringAgent intendedAgent,Int2D position){
 		// constructeur pour les ordres concernant les tubes de peintures ( 3 arguments)
 		this.orderingAgent = orderingAgent;
 		this.intendedAgent = intendedAgent;
 		this.position = position;
 		this.targetType = TargetType.paintPot;
-		
 	}
 	
 	public Order(ScoutAgent orderingAgent,ColoringAgent intendedAgent,Int2D position, int scoreOfLand){

@@ -79,7 +79,7 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 		int costOfMove = Statics.computeCost(currentColor.getColor(), this.getColorAgent());
 		while (this.steps >= costOfMove) {
 			moveWithoutObjective();
-			this.steps = this.steps - costOfMove;
+			this.steps -= costOfMove;
 			currentColor = (CaseColor)Statics.Get(this.grid.getGrid().getObjectsAtLocation(this.location.x, this.location.y),CaseColor.class);
 			costOfMove = Statics.computeCost(currentColor.getColor(), this.getColorAgent());
 		}

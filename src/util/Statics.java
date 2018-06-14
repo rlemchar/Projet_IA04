@@ -68,20 +68,15 @@ public final class Statics {
 	 * @return Liste des couleurs de chaque case
 	 */
 	public static ArrayList<CaseColor> GetZoneColor(GridModel grid,Int2D pointTopLeft,int sizeX,int sizeY){
+		/* Variable locale */
 		ArrayList<CaseColor> result = new ArrayList<CaseColor>();
 		
-		/* point de départ -> Correction au limite */
-		if(pointTopLeft.x < 0)
-			pointTopLeft = new Int2D(0,pointTopLeft.y);
-		
-		if(pointTopLeft.y < 0)
-			pointTopLeft = new Int2D(pointTopLeft.x,0);
-		
 		/* Recherche des objets représentant la couleur des cases*/
-		for(int x = pointTopLeft.x; x < sizeX && x < grid.getGrid().getHeight();x++){
-			for(int y = pointTopLeft.y; y < sizeY && x < grid.getGrid().getWidth() ;y++){
-				// On suppose que la case couleur est bien trouv� -> retour de GetCaseColor non null
-				result.add((CaseColor)Statics.Get(grid.getGrid().getObjectsAtLocation(x, y),CaseColor.class));
+		for(int x = (pointTopLeft.x >= 0) ? pointTopLeft.x : 0; x < sizeX && x < grid.getGrid().getHeight();x++){
+			for(int y = (pointTopLeft.y >= 0) ? pointTopLeft.y : 0; y < sizeY && x < grid.getGrid().getWidth() ;y++){
+				CaseColor temp = (CaseColor)Statics.Get(grid.getGrid().getObjectsAtLocation(x, y),CaseColor.class);
+				if(temp != null)
+					result.add(temp);
 			}
 		}
 		return result;
