@@ -1,6 +1,6 @@
 package strategies;
 
-import model.Color;
+import model.MyColor;
 
 /**
  * Interface permettant de définir la stratégie de déplacement selon la couleur de la case
@@ -14,18 +14,18 @@ public interface IStrategyMove {
 	 * Retourne la couleur sur laquelle l'agent va privilégier lors de ses déplacements
 	 * @return Color
 	 */
-	Color StrategyMove();
+	MyColor StrategyMove();
 	
 	/**
 	 * Retourne la couleur sur laquelle l'agent se déplace si celle de la stratégie n'est pas possible
 	 * @return Color
 	 */
-	Color OtherWiseMove();
+	MyColor OtherWiseMove();
 	
 	/**
 	 * Retourne la couleur sur laquelle l'agent ira en dernier recours
 	 * @return Color;
 	 */
-	Color WorstCaseMove();
+	MyColor WorstCaseMove();
 	
 }

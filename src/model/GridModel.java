@@ -6,7 +6,7 @@ import Agents.AgentOnField;
 import Agents.ColoringAgent;
 import Agents.ScoutAgent;
 import model.PaintPot;
-import model.Color;
+import model.MyColor;
 import sim.engine.SimState;
 import sim.field.grid.SparseGrid2D;
 import util.Constants;
@@ -51,7 +51,7 @@ public class GridModel extends SimState {
 	private void InitGridColor(){
 		for(int x = 0; x < Constants.GRID_SIZE;x++){
 			for(int y = 0;y < Constants.GRID_SIZE;y++){
-				grid.setObjectLocation(new CaseColor(Color.None,x,y), x, y);
+				grid.setObjectLocation(new CaseColor(MyColor.None,x,y), x, y);
 			}
 		}
 	}
@@ -121,7 +121,7 @@ public class GridModel extends SimState {
 		
 		/* Les rouges -> En haut de la map*/
 		for(i = 0; i < Constants.NUM_AGENTS; i++) {
-			temp = FactoryAgent.make((i < Constants.MAX_SCOUT_AGENTS) ? ScoutAgent.class : ColoringAgent.class,Color.Red);
+			temp = FactoryAgent.make((i < Constants.MAX_SCOUT_AGENTS) ? ScoutAgent.class : ColoringAgent.class,MyColor.Red);
 			grid.setObjectLocation(temp, getFreeLocation(Constants.SPAWN_ZONE_INIT, -1));
 			temp.setLocation(grid.getObjectLocation(temp));
 			this.listAgents.add(temp);
@@ -130,7 +130,7 @@ public class GridModel extends SimState {
 		
 		/* Les bleus -> En bas de la map */
 		for(i = 0; i < Constants.NUM_AGENTS; i++) {
-			temp = FactoryAgent.make((i < Constants.MAX_SCOUT_AGENTS) ? ScoutAgent.class : ColoringAgent.class,Color.Blue);
+			temp = FactoryAgent.make((i < Constants.MAX_SCOUT_AGENTS) ? ScoutAgent.class : ColoringAgent.class,MyColor.Blue);
 			grid.setObjectLocation(temp, getFreeLocation(grid.getHeight() - Constants.SPAWN_ZONE_INIT));
 			temp.setLocation(grid.getObjectLocation(temp));
 			this.listAgents.add(temp);

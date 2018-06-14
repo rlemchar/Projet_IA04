@@ -37,7 +37,7 @@ public class CaseColorListWrap {
 	public ArrayList<Int2D> getRed() { return red; }
 	public ArrayList<Int2D> getBlue() { return blue; }
 	public ArrayList<Int2D> getNone() { return none; }
-	public ArrayList<Int2D> getOneList(Color color){
+	public ArrayList<Int2D> getOneList(MyColor color){
 		switch(color) {
 			case Blue:
 				return getBlue();

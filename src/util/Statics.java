@@ -3,7 +3,7 @@ package util;
 import java.util.ArrayList;
 
 import model.CaseColor;
-import model.Color;
+import model.MyColor;
 import model.CaseColorListWrap;
 import sim.util.Bag;
 import sim.util.Int2D;
@@ -85,10 +85,10 @@ public final class Statics {
 	 * @param myColor -> Couleur de l'agent
 	 * @return int -> chiffre représentant le coût de déplacement
 	 */
-	public static int computeCost(Color currentCaseColor, Color myColor) {
+	public static int computeCost(MyColor currentCaseColor, MyColor myColor) {
 		int cost = 0;
 		if(currentCaseColor == myColor) cost = 1;     //on est chez nous 
-		if(currentCaseColor != myColor && currentCaseColor!= model.Color.None) cost = 3;  //on est chez les adversaires
+		if(currentCaseColor != myColor && currentCaseColor!= model.MyColor.None) cost = 3;  //on est chez les adversaires
 		if(currentCaseColor != myColor) cost = 2;             // on est sur une case neutre
 		return cost;
 	} 
@@ -98,7 +98,7 @@ public final class Statics {
 	 * @param grid -> Grille de simulation
 	 * @return -> La couleur de la case
 	 */
-	public static Color GetColorOfCase(GridModel grid,Int2D location) {
+	public static MyColor GetColorOfCase(GridModel grid,Int2D location) {
 		return Statics.GetColorOfCase(grid,location.x,location.y);
 	}
 	
@@ -108,7 +108,7 @@ public final class Statics {
 	 * @param y -> abscisse
 	 * @return
 	 */
-	public static Color GetColorOfCase(GridModel grid,int x,int y) {
+	public static MyColor GetColorOfCase(GridModel grid,int x,int y) {
 		return Statics.GetCaseColor(grid.getGrid().getObjectsAtLocation(x,y)).getColor();
 	}
 	
@@ -120,7 +120,7 @@ public final class Statics {
 	 * @param offset_y
 	 * @return
 	 */
-	public static Color GetColorOfCase(GridModel grid,int x,int y,int offset_x,int offset_y) {
+	public static MyColor GetColorOfCase(GridModel grid,int x,int y,int offset_x,int offset_y) {
 		return Statics.GetColorOfCase(grid, x + offset_x,y + offset_y);
 	}
 	
@@ -169,7 +169,7 @@ public final class Statics {
 	 * @param toFind -> La couleur à trouver
 	 * @return On renvoit la liste des cases 
 	 */
-	public static ArrayList<CaseColor> hasCellsWithColor(CaseColor[] cells,Color toFind) {
+	public static ArrayList<CaseColor> hasCellsWithColor(CaseColor[] cells,MyColor toFind) {
 		/* Variable locale */
 		ArrayList<CaseColor> allFound = new ArrayList<CaseColor>();
 		
@@ -217,13 +217,13 @@ public final class Statics {
 		return Statics.getPaintPot(grid.getGrid().getObjectsAtLocation(pos.x, pos.y));
 	}
 	
-	public static int computeScoreCell(GridModel grid, Int2D cell, Color colorAgent) {
+	public static int computeScoreCell(GridModel grid, Int2D cell, MyColor colorAgent) {
 		int score = 0;
 		Bag BagToEvaluate = null;
 		for(int i = -1; i != 1; i++) {
 			for(int j = -1; j != 1; j++) {
 				BagToEvaluate = grid.getGrid().getObjectsAtLocation(cell.x + i, cell.y + j);
-				Color colorCase = GetCaseColor(BagToEvaluate).getColor();
+				MyColor colorCase = GetCaseColor(BagToEvaluate).getColor();
 				if(colorCase == colorAgent) score = score + 0;
 				else score = score + 1;
 			}			
