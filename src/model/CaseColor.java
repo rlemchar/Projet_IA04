@@ -3,6 +3,7 @@ package model;
 import sim.util.Int2D;
 import model.MyColor;
 
+import java.awt.Color;
 import java.awt.Paint;
 
 import sim.portrayal.simple.RectanglePortrayal2D;
@@ -15,6 +16,11 @@ import sim.portrayal.simple.RectanglePortrayal2D;
  *
  */
 public class CaseColor extends RectanglePortrayal2D{
+	/**
+	 * Serial Version
+	 */
+	private static final long serialVersionUID = 5762389705599757584L;
+
 	/** La couleur **/
 	private MyColor color;
 	
@@ -61,7 +67,20 @@ public class CaseColor extends RectanglePortrayal2D{
 
 	/* Getteur et setteur pour la couleur */
 	public MyColor getColor() { return color; }
-	public void setColor(MyColor color) { this.color = color; }
+	public void setColor(MyColor color) { 
+		this.color = color; 
+		switch(this.color) {
+			case Blue:
+				this.draw(Color.BLUE);
+				break;
+			case Red:
+				this.draw(Color.RED);
+				break;
+			default:
+				this.draw(Color.gray);
+				break;	
+		}
+	}
 	
 	/* Getteur pour la location */
 	public int getX() { return this.location.x; }

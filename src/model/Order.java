@@ -28,7 +28,7 @@ public class Order {
 		this.orderingAgent = orderingAgent;
 		this.intendedAgent = intendedAgent;
 		this.position = position;
-		this.targetType = targetType.paintPot;
+		this.targetType = TargetType.paintPot;
 		
 	}
 	
@@ -37,7 +37,7 @@ public class Order {
 		this.orderingAgent = orderingAgent;
 		this.intendedAgent = intendedAgent;
 		this.position = position;
-		this.targetType = targetType.land;
+		this.targetType = TargetType.land;
 		this.scoreForLandType = scoreOfLand;
 	}
 	
@@ -80,9 +80,9 @@ public class Order {
 	@Override
 	public String toString(){
 		String result = "";
-		result += String.format("Type de l'ordre : {0} \n",this.targetType.toString());
-		result += String.format("Destinataire : {0} \n , Emetteur : {1} \n", this.intendedAgent.toString(),this.orderingAgent.toString());
-		result += String.format("Destination : {0},{1}",this.position.x,this.position.y);
+		result += String.format("Type de l'ordre : %s \n",this.targetType.toString());
+		result += String.format("Destinataire : %s \n , Emetteur : %s \n", this.intendedAgent.toString(),this.orderingAgent.toString());
+		result += String.format("Destination : %d,%d",this.position.x,this.position.y);
 		return result;
 	}
 	

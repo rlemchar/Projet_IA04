@@ -28,7 +28,7 @@ public class GridGUI extends GUIState {
 	}
 
 	public static String getName() {
-		return "Splash"; 
+		return "Fenêtre de contrôle"; 
 	}
 
 	public void start() {
@@ -103,7 +103,7 @@ public class GridGUI extends GUIState {
 		display = new Display2D(Constants.FRAME_SIZE, Constants.FRAME_SIZE, this);
 		display.setClipping(false);
 		displayFrame = display.createFrame();
-		displayFrame.setTitle("Beings");
+		displayFrame.setTitle("Simulation d'un jeu de conquête");
 		c.registerFrame(displayFrame);
 		displayFrame.setVisible(true);
 		display.attach(yardPortrayal, "Yard");

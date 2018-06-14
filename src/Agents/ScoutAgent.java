@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import util.Constants;
 import util.Statics;
-import util.TargetType;
 import model.MyColor;
 import model.CommunicationSystem;
 import model.Order;
@@ -17,10 +16,10 @@ import sim.util.Int2D;
 
 public class ScoutAgent extends AgentOnField implements Steppable {
 	
-	ArrayList<Int2D> lastPerception;
-	ArrayList<Int2D> lastPaintPotDetected;
-	ArrayList<Int2D> lastOwnLandDetected;
-	ArrayList<ColoringAgent> lastAgentsDetected;
+	private ArrayList<Int2D> lastPerception;
+	private ArrayList<Int2D> lastPaintPotDetected;
+	private ArrayList<Int2D> lastOwnLandDetected;
+	private ArrayList<ColoringAgent> lastAgentsDetected;
 	
 	public ScoutAgent() {
 		super();
@@ -28,7 +27,7 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 	}
 	
 	public ScoutAgent(MyColor colorAgent) {
-		super();
+		super(colorAgent);
 	}
 
 	/**
@@ -40,7 +39,7 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 	public void step(SimState state) {
 		super.step(state);
 		this.lastPerception = perceive();
-		this.TotalMove();
+		this.move();
 		this.detectRelevantInformation();
 		this.informOthers();
 		this.resetDetections();
@@ -54,10 +53,14 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 		if(this.avoidScoutAgent() != null) this.location = this.avoidScoutAgent();
 		//	S'ecarte des bords pour couvrir le maximum de surface
 		if(this.avoidEdge() != null) this.location = this.avoidEdge();
-
 	}
 	
-	protected Int2D avoidEdge() {
+	@Override
+	public void move() {
+		this.TotalMove();
+	}
+	
+	private Int2D avoidEdge() {
 		Int2D newLocation = null;
 		if(this.location.x >= Constants.GRID_SIZE - Constants.PERCEPTION_FOR_SCOUT_AGENT)
 			newLocation =  new Int2D(this.location.x - 1, this.location.y);
@@ -127,7 +130,7 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 		}
 	}
 			
-	ArrayList<Int2D> filterPaintPots(){
+	private ArrayList<Int2D> filterPaintPots(){
 		// Filtering info to target paint pots
 		
 		ArrayList<Int2D> paintPotsLocations = new ArrayList<Int2D>();
@@ -146,7 +149,7 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 		return paintPotsLocations;
 	}
 	
-	ArrayList<ColoringAgent> filterAgents(){
+	private ArrayList<ColoringAgent> filterAgents(){
 		ArrayList<ColoringAgent> agentsToInform = new ArrayList<ColoringAgent>();
 		
 		// On regarde si des agents colorieur sont présents dans le champ de perception
@@ -154,9 +157,8 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 			Bag objects = this.grid.getGrid().getObjectsAtLocation(perceivedCell.x, perceivedCell.y);
 			if (objects != null){
 				for (Object obj : objects){
-					if (obj.getClass() == ColoringAgent.class){
-						ColoringAgent foundAgent = (ColoringAgent) obj;
-						if (foundAgent.colorAgent == this.colorAgent){
+					if (obj instanceof ColoringAgent){
+						if (((ColoringAgent)obj).colorAgent == this.colorAgent){
 							// Il y'a un agent colorieur du même camp dans la case, on doit l'ajouter à la liste des destinataires
 							agentsToInform.add((ColoringAgent)obj);
 						}
@@ -174,15 +176,10 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 		return null;
 	}
 	
-	int calculateDistanceScore(Int2D agentLocalisation, Int2D targetLocalisation){
-		
-		int xdistance = Math.abs(agentLocalisation.x - targetLocalisation.x);
-		int ydistance = Math.abs(agentLocalisation.y - targetLocalisation.y);
-		
-		return xdistance+ydistance;
-	}
-	
-	void resetDetections(){
+	/**
+	 * Efface les précédents données 
+	 */
+	public void resetDetections(){
 		this.lastPerception.clear();
 		this.lastOwnLandDetected.clear();
 		this.lastPaintPotDetected.clear();
@@ -196,35 +193,37 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 		this.lastAgentsDetected = filterAgents();
 	}
 	
-	Int2D getMostPertinentPaintPotLocation(ColoringAgent coloringAgent){
+	/**
+	 * Retourne la position du pot de peinture le plus proche de l'agent passé en paramètre
+	 * @param coloringAgent
+	 * @return le pot de peinture le plus proche
+	 */
+	private Int2D getMostPertinentPaintPotLocation(ColoringAgent coloringAgent){
 		
 		if (this.lastPaintPotDetected.isEmpty()){
 			return null;
-		}else{
-			Int2D closer = this.lastPaintPotDetected.get(0);
-			for (int i =1; i<this.lastPaintPotDetected.size();i++){
-				if (calculateDistanceScore(coloringAgent.getLocation(),closer) > 
-				calculateDistanceScore(coloringAgent.getLocation(),this.lastPaintPotDetected.get(i))){
-					closer = this.lastPaintPotDetected.get(i);
-				}
-			}
-			return closer;
+		}
+		else{
+			return this.lastPaintPotDetected
+						.stream()
+						.min((p1,p2) -> Integer.compare(
+								Statics.absoluteDistance(coloringAgent.location, p1)
+							   ,Statics.absoluteDistance(coloringAgent.location, p2)))
+						.get();
 		}
 	}
 	
-	Int2D getMostPertinentLandLocation(ColoringAgent coloringAgent){
+	private Int2D getMostPertinentLandLocation(ColoringAgent coloringAgent){
 		
 		if (this.lastOwnLandDetected.isEmpty()){
 			return null;
 		}else{
-			Int2D closer = this.lastOwnLandDetected.get(0);
-			for (int i =1; i<this.lastOwnLandDetected.size();i++){
-				if (calculateDistanceScore(coloringAgent.getLocation(),closer) > 
-				calculateDistanceScore(coloringAgent.getLocation(),this.lastOwnLandDetected.get(i))){
-					closer = this.lastOwnLandDetected.get(i);
-				}
-			}
-			return closer;
+			return this.lastOwnLandDetected
+					.stream()
+					.min((p1,p2) -> Integer.compare(
+							Statics.absoluteDistance(coloringAgent.location, p1)
+						   ,Statics.absoluteDistance(coloringAgent.location, p2)))
+					.get();
 		}
 	}
 	

@@ -1,7 +1,5 @@
 package Agents;
 
-	import java.awt.Color;
-
 import model.GridModel;
 
 import java.util.ArrayList;
@@ -71,7 +69,6 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 	/* Step */
 	@Override
 	public void step(SimState state) {
-		
 		this.grid = (GridModel) state;
 		this.location = this.grid.getGrid().getObjectLocation(this);
 		this.steps = Constants.MAX_STEPS;
@@ -90,91 +87,82 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 	}
 	
 	
+	/**
+	 * Bouger sans objectif
+	 */
 	public void moveWithoutObjective(){		
 		// Mouvement al�atoire
 		this.location = this.moveRandom();
-
 	}
 	
-	protected Int2D moveRandom() {
+	public Int2D moveRandom() {
+		/* Variables locales */
+		int rand = new Random().nextInt(4);
+		int offset = 0;
 		
-		Int2D newLocation = this.location;
-		Random generator = new Random();
-		int rand = generator.nextInt(4);
-		
+		/* Mis à jour offset */
 		switch(rand)
 		{
 			case 0:
-				if(this.location.x < 49) newLocation =  new Int2D(this.location.x + 1, this.location.y);
-				else newLocation =  new Int2D(this.location.x - 1, this.location.y);
+				offset = (this.location.x < this.grid.getGrid().getHeight()) ? 1 : -1;
 				break;
 			case 1:
-				if(this.location.x > 0) newLocation =  new Int2D(this.location.x - 1, this.location.y);
-				else newLocation =  new Int2D(this.location.x + 1, this.location.y);
+				offset = (this.location.x > 0) ? -1 : 1;
 				break;
 			case 2:
-				if(this.location.y < 49) newLocation =  new Int2D(this.location.x, this.location.y + 1);
-				else newLocation =  new Int2D(this.location.x, this.location.y - 1);
+				offset = (this.location.y < this.grid.getGrid().getWidth()) ? 1 : -1;
 				break;
 			case 3:
-				if(this.location.y > 0) newLocation =  new Int2D(this.location.x, this.location.y - 1);
-				else newLocation =  new Int2D(this.location.x, this.location.y + 1);
+				offset = (this.location.y > 0) ? -1 : 1;
 				break;
 		}
-		return newLocation;
+		
+		return (rand < 2) ? 
+				new Int2D(this.location.x + offset,this.location.y) 
+			  : new Int2D(this.location.x,this.location.y + offset);
 	}
 	
-
-	
 	/* Permet à un agent de percevoir */
-	public ArrayList<Integer> determineLimits(){      // determine les limites de la perception en prenant en compte la taille de la grille
+	public int[][] determineLimits(){      // determine les limites de la perception en prenant en compte la taille de la grille
+		/* Variable locale */
+		int[][] limits = new int[2][2];
 		
-		ArrayList<Integer> limits = new ArrayList<Integer>();
-		
-		if (this.location.x < this.powerOfPerception) {
-			limits.add(0);
-		}
-		else {
-			limits.add(this.location.x - this.powerOfPerception);
-		}
-		if (this.location.x > Constants.GRID_SIZE - this.powerOfPerception) {
-			limits.add(Constants.GRID_SIZE);
-		}
-		else {
-			limits.add(this.location.x + this.powerOfPerception);
-		}
-		
-		if (this.location.y < this.powerOfPerception) {
-			limits.add(0);
-		}
-		else {
-			limits.add(this.location.y - this.powerOfPerception);
-		}
-		if (this.location.y > Constants.GRID_SIZE - this.powerOfPerception) {
-			limits.add(Constants.GRID_SIZE);
-		}
-		else {
-			limits.add(this.location.y + this.powerOfPerception);
-		}
+		/* Mis à jour des limites */
+		limits[0][0] = (this.location.x >= this.powerOfPerception) ? 
+				this.location.x - this.powerOfPerception : 0;
+		limits[0][1] = (this.location.x > Constants.GRID_SIZE - this.powerOfPerception) ? 
+				Constants.GRID_SIZE : this.location.x + this.powerOfPerception;
+		limits[1][0] = (this.location.y >= this.powerOfPerception) ? 
+				this.location.y - this.powerOfPerception : 0;
+		limits[1][1] = this.location.y > Constants.GRID_SIZE - this.powerOfPerception ?
+				Constants.GRID_SIZE : this.location.y + this.powerOfPerception;
 		
 		return limits;
 	}
 	
-	
+	/**
+	 * Méthode pour percevoir les alentours
+	 * @return Les coordonnées sous forme de liste
+	 */
 	public ArrayList<Int2D> perceive(){
-		ArrayList<Integer> limits = new ArrayList<Integer>();
-		limits = determineLimits();
-		Integer lower_bound_x = limits.get(0);
-		Integer upper_bound_x = limits.get(1);
-		Integer lower_bound_y = limits.get(2);
-		Integer upper_bound_y = limits.get(3);
-
+		/* Variables locales */
+		int[][] limits = new int[2][2];
 		ArrayList<Int2D> allCoordsFromPerception = new ArrayList<Int2D>();
+		
+		/* Récupération des limites de la perception */
+		limits = determineLimits();		
+		int lower_bound_x = limits[0][0];
+		int upper_bound_x = limits[0][1];
+		int lower_bound_y = limits[1][0];
+		int upper_bound_y = limits[1][1];
+
+		/* Perception */
 		for(int x = lower_bound_x; x < upper_bound_x;x++){
 			for(int y =  lower_bound_y; y < upper_bound_y;y++){
 				allCoordsFromPerception.add(new Int2D(x,y));
 			}
 		}
+		
 		return allCoordsFromPerception;
 	}
 
@@ -218,6 +206,13 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 		return null;
 	}
 	
+	
+	
+	/**
+	 * Permet de se déplacer selon la stratégie ou mission courante 
+	 */
+	public abstract void move();
+	
 	/** Strategie de base pour tout les agents lors des déplacements **/
 	@Override
 	public MyColor StrategyMove() {
@@ -240,6 +235,7 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 	 */
 	public void setNewPosition(Int2D location) {
 		this.grid.getGrid().setObjectLocation(this, location);
+		this.location = location;
 	}
 	
 	/**
@@ -249,14 +245,6 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 	 */
 	public void setNewPosition(int x,int y) {
 		this.grid.getGrid().setObjectLocation(this, x, y);
-		this.setLocation(x, y);
-	}
-	
-	public void setLocation(Int2D location) {
-		this.location = location;
-	}
-	
-	public void setLocation(int x,int y) {
 		this.location = new Int2D(x,y);
 	}
 	
@@ -264,9 +252,12 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 	public MyColor getColorAgent() { return this.colorAgent; }
 	
 	/* Setteurs */
-	public void setColorAgent(MyColor colorAgent) { this.colorAgent = colorAgent; }
+	public void setColorAgent(MyColor colorAgent) { 
+		this.colorAgent = colorAgent; 
+		this.oppositeColor = (this.colorAgent == MyColor.Blue) ? MyColor.Red : MyColor.Blue;
+	}
 	public void setGrid(GridModel grid) { this.grid = grid; }
-	
+	public void setLocation(Int2D location) { this.location = location; }
 	
 	public Stoppable getStop() {
 		return stop;
@@ -276,7 +267,8 @@ public abstract class AgentOnField implements Steppable,IStrategyMove{
 		this.stop = stop;
 	}
 	
-	public Int2D getLocation(){
+	/* Getteur pour location */
+	public Int2D getLocation() {
 		return this.location;
 	}
 }

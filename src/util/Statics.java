@@ -49,17 +49,6 @@ public final class Statics {
 		return null;
 	}
 	
-	public static PaintPot GetPaintPot(GridModel grid,Int2D position){
-		
-		for(Object obj : grid.getGrid().getObjectsAtLocation(position.x, position.y)) {
-			if(obj instanceof PaintPot)
-				return (PaintPot)obj;
-		}
-		return null;
-	}
-	
-	
-	
 	/**
 	 * Permet de renvoyer tous les couleurs des cases pour une zone donnée en param�tre
 	 * @param grid -> Grille de simulation
@@ -86,11 +75,12 @@ public final class Statics {
 	 * @return int -> chiffre représentant le coût de déplacement
 	 */
 	public static int computeCost(MyColor currentCaseColor, MyColor myColor) {
-		int cost = 0;
-		if(currentCaseColor == myColor) cost = 1;     //on est chez nous 
-		if(currentCaseColor != myColor && currentCaseColor!= model.MyColor.None) cost = 3;  //on est chez les adversaires
-		if(currentCaseColor != myColor) cost = 2;             // on est sur une case neutre
-		return cost;
+		if(currentCaseColor == myColor) 
+			return 1;     //on est chez nous
+		else {
+			// Soit on est sur une case neutre , soit on est chez l'adversaire
+			return (currentCaseColor == model.MyColor.None) ? 2 : 3;
+		}
 	} 
 	
 	/**
@@ -217,17 +207,34 @@ public final class Statics {
 		return Statics.getPaintPot(grid.getGrid().getObjectsAtLocation(pos.x, pos.y));
 	}
 	
+	/**
+	 * Décompte le nombre de cases qui n'appartient pas ne sont pas 
+	 * de la même couleur de référence passé en paramètre sur une zone donnée
+	 * @param grid -> Grille de simulation
+	 * @param cell -> Point centrale de la zone de recherche
+	 * @param colorAgent -> Couleur référence == Couleur de l'agent
+	 * @return
+	 */
 	public static int computeScoreCell(GridModel grid, Int2D cell, MyColor colorAgent) {
 		int score = 0;
-		Bag BagToEvaluate = null;
-		for(int i = -1; i != 1; i++) {
-			for(int j = -1; j != 1; j++) {
-				BagToEvaluate = grid.getGrid().getObjectsAtLocation(cell.x + i, cell.y + j);
-				MyColor colorCase = GetCaseColor(BagToEvaluate).getColor();
-				if(colorCase == colorAgent) score = score + 0;
-				else score = score + 1;
+		for(int i = -1; i <= 1; i++) {
+			for(int j = -1; j <= 1; j++) {
+				MyColor colorCase = GetCaseColor(grid.getGrid().getObjectsAtLocation(cell.x + i, cell.y + j)).getColor();
+				if(colorCase != colorAgent) 
+					score++;
 			}			
 		}
 		return score;
+	}
+	
+	/**
+	 * Retourne la distance absolue entre 2 points 
+	 * -> D = |x1 - x2| + |y1 - y2|
+	 * @param point1 -> 1er point
+	 * @param point2 -> 2nd point
+	 * @return
+	 */
+	public static int absoluteDistance(Int2D point1,Int2D point2) {
+		return Math.abs(point1.x - point2.x) + Math.abs(point1.y - point2.y);
 	}
 }
