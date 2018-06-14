@@ -7,7 +7,6 @@ import Agents.AgentOnField;
 import Agents.ScoutAgent;
 import model.GridModel;
 import model.PaintPot;
-import model.CaseColor;
 import sim.display.Controller;
 import sim.display.Display2D;
 import sim.display.GUIState;

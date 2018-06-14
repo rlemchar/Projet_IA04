@@ -133,9 +133,8 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	public boolean Color(){
 		/* Variables locales*/
 		ArrayList<CaseColor> colorZoneFiltered;
-		CaseColor[] cellWithOppositeColor;
 		
-		/* RÔøΩcupÔøΩration de la zone de coloriage -> Uniquement les cases qui ne sont pas de la couleur de l'agent*/
+		/* RÈcupÔøΩration de la zone de coloriage -> Uniquement les cases qui ne sont pas de la couleur de l'agent*/
 		colorZoneFiltered = Statics.GetZoneColor(grid, new Int2D(
 									this.location.x - this.powerOfColoration,
 									this.location.y - this.powerOfColoration
@@ -148,30 +147,11 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		if(colorZoneFiltered.isEmpty())
 			return false;
 		
-		/* RÔøΩcupÔøΩration des cases avec la couleur de l'ÔøΩquipe adverse */
-		cellWithOppositeColor = colorZoneFiltered.stream().filter(cell -> cell.getColor() == this.oppositeColor).toArray(CaseColor[]::new);
-		
 		/* On ne colorie pas si le nombre de cases ÔøΩ colorier est infÔøΩrieur au seuil */
 		if(colorZoneFiltered.size() >= Constants.THRESHOLD_FOR_PAINTING_A_ZONE){
-			/* On colorie et/ou on rend les cases neutre d'abord */
-			for(CaseColor cell : colorZoneFiltered){
-				if(this.numberOfTubeOfPaint > 0){
-					cell.setColor(cell.getColor() == this.oppositeColor ? MyColor.None : this.colorAgent);
-					this.numberOfTubeOfPaint--;
-				}		
-				else
-					break;	
-			}
-			
-			/* On colorie les cases neutres restantes */
-			for(CaseColor cell : cellWithOppositeColor){
-				if(this.numberOfTubeOfPaint > 0){
-					cell.setColor(this.colorAgent);
-					this.numberOfTubeOfPaint--;
-				}
-				else
-					break;
-			}
+			/* On colorie et/ou on rend les cases neutre */
+			colorZoneFiltered.stream().forEach(caseColor -> caseColor.setColor(caseColor.getColor() == this.oppositeColor ? MyColor.None : this.colorAgent));
+			this.numberOfTubeOfPaint--;
 			
 			/* La mission est termin√©e */
 			this.resetTarget();
