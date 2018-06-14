@@ -9,7 +9,6 @@ import util.TargetType;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.Comparator;
 
 import model.CaseColor;
@@ -94,6 +93,10 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		
 		/* Sinon on se déplace */
 		this.move();
+		
+		/* On colorie si on on peut colorier */
+		if(this.target == TargetType.land)
+			this.Color();
 	}
 	
 	/**
@@ -118,9 +121,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		if(this.getDestination() != null)
 			this.moveTowardsDestination();
 		else {
-			//System.out.println(this.location);
 			this.setNewPosition(this.moveRandom());
-			//System.out.println(this.location);
 		}
 	}
 	
@@ -131,25 +132,29 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	 */
 	public boolean Color(){
 		/* Variables locales*/
-		Stream<CaseColor> colorZoneFiltered;
+		ArrayList<CaseColor> colorZoneFiltered;
 		CaseColor[] cellWithOppositeColor;
-		
-		System.out.println("Je vais colorier !");
 		
 		/* R�cup�ration de la zone de coloriage -> Uniquement les cases qui ne sont pas de la couleur de l'agent*/
 		colorZoneFiltered = Statics.GetZoneColor(grid, new Int2D(
 									this.location.x - this.powerOfColoration,
 									this.location.y - this.powerOfColoration
 								), this.location.x + this.powerOfColoration, this.location.y + this.powerOfColoration
-							).stream().filter(cell -> cell.getColor() != this.colorAgent);
+							).stream()
+							 .filter(cell -> cell.getColor() != this.colorAgent)
+							 .collect(Collectors.toCollection(ArrayList::new));
+		
+		/* Si toutes les cases sont de notre couleur */
+		if(colorZoneFiltered.isEmpty())
+			return false;
 		
 		/* R�cup�ration des cases avec la couleur de l'�quipe adverse */
-		cellWithOppositeColor = colorZoneFiltered.filter(cell -> cell.getColor() == this.oppositeColor).toArray(CaseColor[]::new);
+		cellWithOppositeColor = colorZoneFiltered.stream().filter(cell -> cell.getColor() == this.oppositeColor).toArray(CaseColor[]::new);
 		
 		/* On ne colorie pas si le nombre de cases � colorier est inf�rieur au seuil */
-		if(colorZoneFiltered.count() >= Constants.THRESHOLD_FOR_PAINTING_A_ZONE){
+		if(colorZoneFiltered.size() >= Constants.THRESHOLD_FOR_PAINTING_A_ZONE){
 			/* On colorie et/ou on rend les cases neutre d'abord */
-			for(CaseColor cell : colorZoneFiltered.toArray(CaseColor[]::new)){
+			for(CaseColor cell : colorZoneFiltered){
 				if(this.numberOfTubeOfPaint > 0){
 					cell.setColor(cell.getColor() == this.oppositeColor ? MyColor.None : this.colorAgent);
 					this.numberOfTubeOfPaint--;
@@ -185,14 +190,12 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		/* On vérifie que le pot de peinture existe */
 		if(pot == null)
 			return false;
-	
+		
 		/* On remplit les tubes de peintures */
-		if(!this.isFullyLoadedOfPaint()){
-			while(this.isFullyLoadedOfPaint() && pot.getQuantity() != 0){
-				this.numberOfTubeOfPaint++;
-				pot.decQuantity();
-			}
-		}
+		while(!this.isFullyLoadedOfPaint() && pot.getQuantity() >= 0){
+			this.numberOfTubeOfPaint++;
+			pot.decQuantity();
+		}	
 		
 		/* Recharge effectué -> Si l'agent est remplit , on retourne true quand même */
 		return true;

@@ -148,7 +148,7 @@ public class GridGUI extends GUIState {
 		}
 		else {
 			System.out.println(String.format(
-					"L'équipe {0} a gagné avec {1} cases coloriés \n Les perdants ont réussi à colorier {2} cases"
+					"L'équipe %s a gagné avec %d cases coloriés \n Les perdants ont réussi à colorier %d cases"
 					, (blue > red) ? "bleue" : "rouge",(blue > red) ? blue : red,(blue > red) ? red : blue));
 		}
 	}
