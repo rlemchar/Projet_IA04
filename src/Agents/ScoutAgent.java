@@ -119,7 +119,7 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 					CommunicationSystem.addOrder(order);
 				}
 				if (mostPertinentLand != null){
-					Order order = new Order(this,coloringAgent, mostPertinentLand,0);
+					Order order = new Order(this,coloringAgent, mostPertinentLand,Statics.computeScoreCell(this.grid,mostPertinentLand,this.colorAgent));
 					CommunicationSystem.addOrder(order);
 				}
 			}
