@@ -30,7 +30,7 @@ public final class Statics {
 			/* Recherche de l'objet désiré */
 			for(Object obj : objects) {
 				if(classT.isInstance(obj))
-					return classT.cast(obj);
+					return obj;
 			}
 		}
 		return null;

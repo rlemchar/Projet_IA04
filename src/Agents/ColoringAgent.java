@@ -73,6 +73,10 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 			if(this.rechargePaint((PaintPot)Statics.Get(this.grid,PaintPot.class, this.location))){
 				this.resetTarget();
 			}
+			else {
+				if(this.getDestination() == this.location)
+					this.resetTarget();
+			}
 		}
 		// L'agent cherche Ã  colorier une case
 		else{
@@ -134,7 +138,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		/* Variables locales*/
 		ArrayList<CaseColor> colorZoneFiltered;
 		
-		/* Récupï¿½ration de la zone de coloriage -> Uniquement les cases qui ne sont pas de la couleur de l'agent*/
+		/* Rï¿½cupï¿½ration de la zone de coloriage -> Uniquement les cases qui ne sont pas de la couleur de l'agent*/
 		colorZoneFiltered = Statics.GetZoneColor(grid, new Int2D(
 									this.location.x - this.powerOfColoration,
 									this.location.y - this.powerOfColoration
