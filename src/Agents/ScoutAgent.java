@@ -217,9 +217,9 @@ public class ScoutAgent extends AgentOnField implements Steppable {
 		}else{
 			return this.lastOwnLandDetected
 					.stream()
-					.min((p1,p2) -> Integer.compare(
-							Statics.absoluteDistance(coloringAgent.location, p1)
-						   ,Statics.absoluteDistance(coloringAgent.location, p2)))
+					.max((p1,p2) -> Integer.compare(
+							Statics.computeScoreCell(this.grid, p1, this.colorAgent)
+						   ,Statics.computeScoreCell(this.grid,p2,this.colorAgent)))
 					.get();
 		}
 	}
