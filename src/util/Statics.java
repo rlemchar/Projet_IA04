@@ -113,6 +113,10 @@ public final class Statics {
 	 * @return
 	 */
 	public static MyColor GetColorOfCase(GridModel grid,int x,int y) {
+		/* On vérifie les limites pour x et y */
+		if(x < 0 || x >= grid.getGrid().getHeight() || y < 0 || y >= grid.getGrid().getWidth())
+			return null;
+		
 		return ((CaseColor)Statics.Get(grid.getGrid().getObjectsAtLocation(x,y),CaseColor.class)).getColor();
 	}
 	
