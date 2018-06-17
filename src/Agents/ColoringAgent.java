@@ -24,7 +24,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	private static final long serialVersionUID = 4967689413678754350L;
 	
 	/* Nombre de tubes de peinture */
-	private int numberOfTubeOfPaint;
+	private Integer numberOfTubeOfPaint;
 	
 	/* Bool√©en indiquant si l'agent a actuellement une destination pr√©cise o√π aller */
 	private boolean hasAdestination;
@@ -38,6 +38,9 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 	/* Cible de l'agent*/
 	private TargetType target;
 	
+	/* Order annulÈ de force */
+	private boolean cancelledOrder;
+	
 	/** Constructeur par dÔøΩfaut **/
 	public ColoringAgent() {
 		super();
@@ -47,6 +50,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		this.powerOfPerception = Constants.PERCEPTION_FOR_COLORING_AGENT;
 		this.powerOfColoration = Constants.COLORATION_POWER_FOR_COLORING_AGENT;
 		this.target = TargetType.paintPot;
+		this.cancelledOrder = false;
 	}
 	
 	/**
@@ -61,11 +65,13 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		this.powerOfPerception = Constants.PERCEPTION_FOR_COLORING_AGENT;
 		this.powerOfColoration = Constants.COLORATION_POWER_FOR_COLORING_AGENT;
 		this.target = TargetType.paintPot;
+		this.cancelledOrder = false;
 	}
 	
 	@Override
 	public void step(SimState state) {
 		super.step(state);
+		
 		
 		/* L'agent cherche des pots de peinture */
 		if (this.target == TargetType.paintPot){
@@ -75,14 +81,19 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 			}
 			else {
 				if(this.getDestination() == this.location)
-					this.resetTarget();
+					this.order = null;
+					this.cancelledOrder = true;
 			}
 		}
 		// L'agent cherche √† colorier une case
 		else{
 			/* Si l'agent est arriv√© √† destination */
 			if(this.location == this.getDestination()) { 
-				this.Color();
+				/* Aucune erreur n'a ÈtÈ dÈtectÈ -> mÍme s'il n'a pas pu colorier , on annule l'ordre */
+				if(this.Color()) {
+					this.order = null;
+					this.cancelledOrder = true;
+				}					
 			}
 			
 			/* Sinon on regarde si on colorie ou non la zone actuelle */
@@ -99,7 +110,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		this.move();
 		
 		/* On colorie si on on peut colorier */
-		if(this.target == TargetType.land)
+		if(this.target == TargetType.land && !this.hasAdestination)
 			this.Color();
 	}
 	
@@ -114,7 +125,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		/* Mis √† jour l'ordre 
 		 * -> Si pas d'ordre , on prend le nouvel ordre 
 		 * -> Sinon on prend soit le nouveau soit on garde l'actuel */
-		if (newOrder != null){
+		if (newOrder != null && !this.cancelledOrder){
 			this.order = (this.order != null) ? this.compareCurrentOrderWithNewOne(newOrder) : newOrder;
 		}
 		
@@ -122,7 +133,7 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		this.hasAdestination = (this.order != null);
 		
 		/* D√©placement */
-		if(this.getDestination() != null)
+		if(this.hasAdestination)
 			this.moveTowardsDestination();
 		else {
 			this.setNewPosition(this.moveRandom());
@@ -138,6 +149,10 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 		/* Variables locales*/
 		ArrayList<CaseColor> colorZoneFiltered;
 		
+		/* SÈcuritÈ : On ne colorie pas si on on a pas de tube de peinture */
+		if(this.numberOfTubeOfPaint == 0)
+			return false;
+			
 		/* RÔøΩcupÔøΩration de la zone de coloriage -> Uniquement les cases qui ne sont pas de la couleur de l'agent*/
 		colorZoneFiltered = Statics.GetZoneColor(grid, new Int2D(
 									this.location.x - this.powerOfColoration,
@@ -159,10 +174,8 @@ public class ColoringAgent extends AgentOnField implements Steppable{
 			
 			/* La mission est termin√©e */
 			this.resetTarget();
-			
-			return true;
 		}
-		return false;
+		return true;
 		
 	}
 	

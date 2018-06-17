@@ -202,9 +202,15 @@ public final class Statics {
 		int score = 0;
 		for(int i = -1; i <= 1; i++) {
 			for(int j = -1; j <= 1; j++) {
-				MyColor colorCase = ((CaseColor)Get(grid.getGrid().getObjectsAtLocation(cell.x + i, cell.y + j),CaseColor.class)).getColor();
-				if(colorCase != colorAgent) 
-					score++;
+				try {
+					MyColor colorCase = ((CaseColor)Get(grid.getGrid().getObjectsAtLocation(cell.x + i, cell.y + j),CaseColor.class)).getColor();
+					if(colorCase != colorAgent) 
+						score++;
+				}
+				catch(NullPointerException exc) {
+					continue;
+				}
+				
 			}			
 		}
 		return score;
